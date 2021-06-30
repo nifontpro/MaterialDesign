@@ -1,16 +1,19 @@
 package ru.nifontbus.materialdesign.ui.picture
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import coil.api.load
+import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import ru.nifontbus.materialdesign.MainActivity
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.databinding.MainFragmentBinding
 
@@ -23,6 +26,7 @@ class PictureOfTheDayFragment : Fragment() {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,9 +39,94 @@ class PictureOfTheDayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getData()
-            .observe(viewLifecycleOwner, { renderData(it) })
+        viewModel.getData().observe(viewLifecycleOwner, { renderData(it) })
+        binding.inputLayout.setEndIconOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW).apply {
+                val req = binding.inputEditText.text.toString()
+                data = Uri.parse("https://en.wikipedia.org/wiki/$req")
+            })
+        }
+        setBottomAppBar(view)
+//        setBottomSheetBehavior(view.findViewById(R.id.bottom_sheet_container))
+//        setBottomSheetBehavior(binding.incBS.bottomSheetContainer)
+
+//        bottomSheetBehavior.addBottomSheetCallback(object :
+//            BottomSheetBehavior.BottomSheetCallback() {
+//            override fun onStateChanged(bottomSheet: View, newState: Int) {
+//                when (newState) {
+//                    BottomSheetBehavior.STATE_DRAGGING -> TODO("not implemented")
+//                    BottomSheetBehavior.STATE_COLLAPSED -> TODO("not implemented")
+//                    BottomSheetBehavior.STATE_EXPANDED -> TODO("not implemented")
+//                    BottomSheetBehavior.STATE_HALF_EXPANDED -> TODO("not implemented")
+//                    BottomSheetBehavior.STATE_HIDDEN -> TODO("not implemented")
+//                    BottomSheetBehavior.STATE_SETTLING -> TODO("not implemented")
+//                }
+//            }
+//
+//            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+//                TODO("Not yet implemented")
+//            }
+//        })
     }
+
+    private fun setBottomSheetBehavior(bottomSheet: ConstraintLayout) {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_bottom_bar, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.app_bar_fav -> Toast.makeText(context, "Favourite", Toast.LENGTH_SHORT).show()
+            R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
+            R.id.app_bar_setting -> Toast.makeText(context, "Setting", Toast.LENGTH_SHORT).show()
+            android.R.id.home -> {
+                activity?.let {
+                    BottomNavigationDrawerFragment().show(it.supportFragmentManager, "tag")
+                }
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setBottomAppBar(view: View) {
+        val context = activity as MainActivity
+        context.setSupportActionBar(view.findViewById(R.id.bottom_app_bar))
+        setHasOptionsMenu(true)
+
+        binding.fab.setOnClickListener {
+            if (isMain) {
+                isMain = false
+                binding.bottomAppBar.navigationIcon = null
+                binding.bottomAppBar.fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END
+                binding.fab.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_back_fab
+                    )
+                )
+                binding.bottomAppBar.replaceMenu(R.menu.menu_bottom_bar_other_screen)
+            } else {
+                isMain = true
+                binding.bottomAppBar.navigationIcon =
+                    ContextCompat.getDrawable(context, R.drawable.ic_hamburger_menu_bottom_bar)
+                binding.bottomAppBar.fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
+                binding.fab.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_plus_fab
+                    )
+                )
+                binding.bottomAppBar.replaceMenu(R.menu.menu_bottom_bar)
+            }
+        }
+    }
+
 
     private fun renderData(data: PictureOfTheDayData) {
         when (data) {
@@ -46,18 +135,20 @@ class PictureOfTheDayFragment : Fragment() {
                 val url = serverResponseData.url
                 if (url.isNullOrEmpty()) {
                     //Отобразите ошибку
-                    //showError("Сообщение, что ссылка пустая")
+                    toast("Message link is empty")
                 } else {
                     //Отобразите фото
                     //showSuccess()
                     //Coil в работе: достаточно вызвать у нашего ImageView
                     //нужную extension-функцию и передать ссылку и заглушки для placeholder
-                    binding.imageView.load(url) {
+                    Log.e("my", url)
+                    binding.imageView.load("https://yandex.ru/images/search?from=tabbar&text=фото%20наса&pos=2&img_url=https%3A%2F%2Fpbs.twimg.com%2Fmedia%2FD3zBvKGXsAA_kBe.jpg&rpt=simage") {
                         lifecycle(this@PictureOfTheDayFragment)
                         error(R.drawable.ic_load_error_vector)
-                        placeholder(R.drawable.ic_no_photo_vector)
+//                        placeholder(R.drawable.ic_no_photo_vector)
                     }
                 }
+                showImage()
             }
 
             is PictureOfTheDayData.Loading -> {
@@ -69,8 +160,14 @@ class PictureOfTheDayFragment : Fragment() {
         }
     }
 
+    private fun showImage() {
+//        binding.imageView.show()
+        binding.includedLoadingLayout.loadingLayout.hide()
+    }
+
     private fun showLoading() {
-        TODO("Not yet implemented")
+//        binding.imageView.hide()
+        binding.includedLoadingLayout.loadingLayout.show()
     }
 
     private fun Fragment.toast(string: String?) {
@@ -87,5 +184,21 @@ class PictureOfTheDayFragment : Fragment() {
 
     companion object {
         fun newInstance() = PictureOfTheDayFragment()
+        private var isMain = true
+    }
+
+    // Управлять видимостью View:
+    fun View.show(): View {
+        if (visibility != View.VISIBLE) {
+            visibility = View.VISIBLE
+        }
+        return this
+    }
+
+    fun View.hide(): View {
+        if (visibility != View.GONE) {
+            visibility = View.GONE
+        }
+        return this
     }
 }
