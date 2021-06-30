@@ -39,6 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <ru.nifontbus.materialdesign.util.EquilateralImageView
@@ -53,17 +54,16 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_no_photo_vector" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <include
+                android:id="@+id/includedLoadingLayout"
+                layout="@layout/loading_layout" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
     <include
-        android:id="@+id/incBS"
+        android:id="@+id/includedBottomSheet"
         layout="@layout/bottom_sheet_layout" />
-
-    <include
-        android:id="@+id/includedLoadingLayout"
-        layout="@layout/loading_layout" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_app_bar"
@@ -85,5 +85,4 @@
         app:srcCompat="@drawable/ic_plus_fab"
         app:tint="#FFFFFF"
         tools:ignore="ContentDescription" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

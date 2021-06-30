@@ -127,7 +127,6 @@ class PictureOfTheDayFragment : Fragment() {
         }
     }
 
-
     private fun renderData(data: PictureOfTheDayData) {
         when (data) {
             is PictureOfTheDayData.Success -> {
@@ -141,8 +140,9 @@ class PictureOfTheDayFragment : Fragment() {
                     //showSuccess()
                     //Coil в работе: достаточно вызвать у нашего ImageView
                     //нужную extension-функцию и передать ссылку и заглушки для placeholder
-                    Log.e("my", url)
-                    binding.imageView.load("https://yandex.ru/images/search?from=tabbar&text=фото%20наса&pos=2&img_url=https%3A%2F%2Fpbs.twimg.com%2Fmedia%2FD3zBvKGXsAA_kBe.jpg&rpt=simage") {
+
+//                    binding.imageView.load("https://freepngimg.com/thumb/city/36275-3-city-hd.png") {
+                    binding.imageView.load(url) {
                         lifecycle(this@PictureOfTheDayFragment)
                         error(R.drawable.ic_load_error_vector)
 //                        placeholder(R.drawable.ic_no_photo_vector)
