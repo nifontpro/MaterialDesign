@@ -3,7 +3,6 @@ package ru.nifontbus.materialdesign.ui.picture
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,7 +47,7 @@ class PictureOfTheDayFragment : Fragment() {
         }
         setBottomAppBar(view)
 //        setBottomSheetBehavior(view.findViewById(R.id.bottom_sheet_container))
-//        setBottomSheetBehavior(binding.incBS.bottomSheetContainer)
+        setBottomSheetBehavior(binding.includedBottomSheet.bottomSheetContainer)
 
 //        bottomSheetBehavior.addBottomSheetCallback(object :
 //            BottomSheetBehavior.BottomSheetCallback() {
@@ -147,8 +146,12 @@ class PictureOfTheDayFragment : Fragment() {
                         error(R.drawable.ic_load_error_vector)
 //                        placeholder(R.drawable.ic_no_photo_vector)
                     }
+                    binding.includedBottomSheet.bottomSheetDescriptionHeader
+                        .text=serverResponseData.title
+                    binding.includedBottomSheet.bottomSheetDescription
+                        .text=serverResponseData.explanation
                 }
-                showImage()
+                hideLoading()
             }
 
             is PictureOfTheDayData.Loading -> {
@@ -160,13 +163,11 @@ class PictureOfTheDayFragment : Fragment() {
         }
     }
 
-    private fun showImage() {
-//        binding.imageView.show()
+    private fun hideLoading() {
         binding.includedLoadingLayout.loadingLayout.hide()
     }
 
     private fun showLoading() {
-//        binding.imageView.hide()
         binding.includedLoadingLayout.loadingLayout.show()
     }
 
