@@ -7,6 +7,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.nifontbus.materialdesign.BuildConfig
+import ru.nifontbus.materialdesign.data.PODRetrofitImpl
+import ru.nifontbus.materialdesign.data.PODServerResponseData
+import ru.nifontbus.materialdesign.data.PictureOfTheDayData
 
 class PictureOfTheDayViewModel(
     private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),

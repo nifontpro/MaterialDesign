@@ -1,4 +1,4 @@
-package ru.nifontbus.materialdesign.ui.picture
+package ru.nifontbus.materialdesign.data
 
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor

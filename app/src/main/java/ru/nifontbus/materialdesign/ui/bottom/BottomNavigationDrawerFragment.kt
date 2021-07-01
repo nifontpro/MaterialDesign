@@ -1,4 +1,4 @@
-package ru.nifontbus.materialdesign.ui.picture
+package ru.nifontbus.materialdesign.ui.bottom
 
 import android.os.Bundle
 import android.view.LayoutInflater

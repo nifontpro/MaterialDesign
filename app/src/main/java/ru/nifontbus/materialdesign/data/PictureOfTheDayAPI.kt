@@ -1,4 +1,4 @@
-package ru.nifontbus.materialdesign.ui.picture
+package ru.nifontbus.materialdesign.data
 
 import retrofit2.Call
 import retrofit2.http.GET

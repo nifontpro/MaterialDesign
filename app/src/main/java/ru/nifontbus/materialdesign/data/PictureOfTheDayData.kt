@@ -1,4 +1,4 @@
-package ru.nifontbus.materialdesign.ui.picture
+package ru.nifontbus.materialdesign.data
 
 sealed class PictureOfTheDayData {
     data class Success(val serverResponseData: PODServerResponseData) : PictureOfTheDayData()

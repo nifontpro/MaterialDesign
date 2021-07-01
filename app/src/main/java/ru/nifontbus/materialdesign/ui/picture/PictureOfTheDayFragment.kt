@@ -14,7 +14,10 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.nifontbus.materialdesign.MainActivity
 import ru.nifontbus.materialdesign.R
+import ru.nifontbus.materialdesign.data.PictureOfTheDayData
 import ru.nifontbus.materialdesign.databinding.MainFragmentBinding
+import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
+import ru.nifontbus.materialdesign.ui.chips.ChipsFragment
 
 class PictureOfTheDayFragment : Fragment() {
 
@@ -82,7 +85,12 @@ class PictureOfTheDayFragment : Fragment() {
         when (item.itemId) {
             R.id.app_bar_fav -> Toast.makeText(context, "Favourite", Toast.LENGTH_SHORT).show()
             R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
-            R.id.app_bar_setting -> Toast.makeText(context, "Setting", Toast.LENGTH_SHORT).show()
+            R.id.app_bar_settings ->
+                activity?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.add(R.id.container, ChipsFragment())
+                    ?.addToBackStack(null)?.commit()
+
             android.R.id.home -> {
                 activity?.let {
                     BottomNavigationDrawerFragment().show(it.supportFragmentManager, "tag")
@@ -147,9 +155,9 @@ class PictureOfTheDayFragment : Fragment() {
 //                        placeholder(R.drawable.ic_no_photo_vector)
                     }
                     binding.includedBottomSheet.bottomSheetDescriptionHeader
-                        .text=serverResponseData.title
+                        .text = serverResponseData.title
                     binding.includedBottomSheet.bottomSheetDescription
-                        .text=serverResponseData.explanation
+                        .text = serverResponseData.explanation
                 }
                 hideLoading()
             }
@@ -164,10 +172,12 @@ class PictureOfTheDayFragment : Fragment() {
     }
 
     private fun hideLoading() {
+//        binding.imageView.show()
         binding.includedLoadingLayout.loadingLayout.hide()
     }
 
     private fun showLoading() {
+//        binding.imageView.setImageIcon(null)
         binding.includedLoadingLayout.loadingLayout.show()
     }
 
