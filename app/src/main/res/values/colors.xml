@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="background">#FAFAFA</color>
 
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
@@ -14,4 +15,24 @@
 
     <color name="color_gray">#66000000</color>
     <color name="loadingBackground">#80FFFFFF</color>
+
+    <color name="green">#44944A</color>
+    <color name="light_gray">#d3d3d3</color>
+
+    <color name="indigo">#4b0082</color>
+    <color name="indigo_dark">#310062</color>
+    <color name="indigo_light">#6d5acf</color>
+    <color name="indigo_background">#edeaff</color>
+
+    <color name="sea_primary">#b2dfdb</color>
+    <color name="sea_dark">#82ada9</color>
+    <color name="sea_light">#e5ffff</color>
+    <color name="sea_background">#f2fffb</color>
+
+    <color name="gray_primary">#90a4ae</color>
+    <color name="gray_dark">#62757f</color>
+    <color name="gray_dark2">#42555f</color>
+    <color name="gray_light">#c1d5e0</color>
+    <color name="gray_background">#f1f5f0</color>
+
 </resources>

@@ -17,7 +17,7 @@ import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
 import ru.nifontbus.materialdesign.databinding.MainFragmentBinding
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
-import ru.nifontbus.materialdesign.ui.chips.ChipsFragment
+import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
 
 class PictureOfTheDayFragment : Fragment() {
 
@@ -88,7 +88,7 @@ class PictureOfTheDayFragment : Fragment() {
             R.id.app_bar_settings ->
                 activity?.supportFragmentManager
                     ?.beginTransaction()
-                    ?.add(R.id.container, ChipsFragment())
+                    ?.add(R.id.container, SettingsFragment())
                     ?.addToBackStack(null)?.commit()
 
             android.R.id.home -> {

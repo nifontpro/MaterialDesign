@@ -6,4 +6,8 @@
     <string name="favourite">favourite</string>
     <string name="settings">settings</string>
     <string name="search">Search</string>
+    <string name="choose_theme">Тема приложения</string>
+    <string name="theme_sea">Морская</string>
+    <string name="theme_indigo">Индиго</string>
+    <string name="theme_gray">Серая</string>
 </resources>
