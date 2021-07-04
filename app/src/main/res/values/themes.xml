@@ -62,8 +62,7 @@
     </style>
 
     <style name="AppButton" parent="Widget.MaterialComponents.Button">
-        <item name="backgroundTint">?attr/colorAccent</item>
+        <item name="backgroundTint">?themeColorDark</item>
     </style>
-
 
 </resources>

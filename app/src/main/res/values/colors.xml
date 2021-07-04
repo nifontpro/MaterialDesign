@@ -24,9 +24,9 @@
     <color name="indigo_light">#6d5acf</color>
     <color name="indigo_background">#edeaff</color>
 
-    <color name="sea_primary">#b2dfdb</color>
-    <color name="sea_dark">#82ada9</color>
-    <color name="sea_light">#e5ffff</color>
+    <color name="sea_primary">#4db6ac</color>
+    <color name="sea_dark">#00867d</color>
+    <color name="sea_light">#82e9de</color>
     <color name="sea_background">#f2fffb</color>
 
     <color name="gray_primary">#90a4ae</color>
