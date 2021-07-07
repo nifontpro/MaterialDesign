@@ -16,6 +16,7 @@ import ru.nifontbus.materialdesign.MainActivity
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
 import ru.nifontbus.materialdesign.databinding.MainFragmentBinding
+import ru.nifontbus.materialdesign.ui.api.ApiActivity
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
 
@@ -91,11 +92,13 @@ class PictureOfTheDayFragment : Fragment() {
                     ?.add(R.id.container, SettingsFragment())
                     ?.addToBackStack(null)?.commit()
 
-            android.R.id.home -> {
+            R.id.home -> {
                 activity?.let {
                     BottomNavigationDrawerFragment().show(it.supportFragmentManager, "tag")
                 }
             }
+
+            R.id.app_bar_api -> activity?.let { startActivity(Intent(it, ApiActivity::class.java))}
 
         }
         return super.onOptionsItemSelected(item)

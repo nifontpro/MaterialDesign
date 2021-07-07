@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
 
         if (savedInstanceState == null) {
-            Log.e("my", "savedInstanceState == null!!!")
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, PictureOfTheDayFragment.newInstance())
                 .commitNow()
