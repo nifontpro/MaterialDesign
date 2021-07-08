@@ -50,7 +50,6 @@ class PictureOfTheDayFragment : Fragment() {
             })
         }
         setBottomAppBar(view)
-//        setBottomSheetBehavior(view.findViewById(R.id.bottom_sheet_container))
         setBottomSheetBehavior(binding.includedBottomSheet.bottomSheetContainer)
 
 //        bottomSheetBehavior.addBottomSheetCallback(object :
@@ -90,28 +89,21 @@ class PictureOfTheDayFragment : Fragment() {
                 }
             }
 
-            R.id.app_bar_fav ->
-                activity?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.replace(R.id.container, ApiBottomFragment())
-                    ?.addToBackStack(null)?.commit()
-
-            R.id.app_bar_api ->
-                activity?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.replace(R.id.container, ApiFragment())
-                    ?.addToBackStack(null)?.commit()
-
-            R.id.app_bar_settings ->
-                activity?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.add(R.id.container, SettingsFragment())
-                    ?.addToBackStack(null)?.commit()
-
+            R.id.app_bar_fav -> replaceFragment(ApiBottomFragment())
+            R.id.app_bar_api -> replaceFragment(ApiFragment())
+            R.id.app_bar_settings -> replaceFragment(SettingsFragment())
             R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.container, fragment)
+            ?.addToBackStack(null)
+            ?.commit()
     }
 
     private fun setBottomAppBar(view: View) {

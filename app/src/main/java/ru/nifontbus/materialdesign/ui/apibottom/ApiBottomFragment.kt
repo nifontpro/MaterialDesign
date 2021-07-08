@@ -16,7 +16,7 @@ class ApiBottomFragment: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding =  FragmentApiBottomBinding.inflate(inflater, container, false)
         return binding.root
@@ -41,6 +41,20 @@ class ApiBottomFragment: Fragment() {
                 else -> false
             }
         }
+        binding.bottomNavigationView.setOnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.bottom_view_earth -> {
+                    //Item tapped
+                }
+                R.id.bottom_view_mars -> {
+                    //Item tapped
+                }
+                R.id.bottom_view_weather -> {
+                    //Item tapped
+                }
+            }
+        }
+
     }
 
     override fun onDestroyView() {
