@@ -16,8 +16,8 @@ import ru.nifontbus.materialdesign.MainActivity
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
 import ru.nifontbus.materialdesign.databinding.MainFragmentBinding
-import ru.nifontbus.materialdesign.ui.api.ApiActivity
-import ru.nifontbus.materialdesign.ui.apibottom.ApiBottomActivity
+import ru.nifontbus.materialdesign.ui.api.ApiFragment
+import ru.nifontbus.materialdesign.ui.apibottom.ApiBottomFragment
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
 
@@ -26,11 +26,10 @@ class PictureOfTheDayFragment : Fragment() {
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
-
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,21 +84,31 @@ class PictureOfTheDayFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.app_bar_fav -> activity?.let { startActivity(Intent(it, ApiBottomActivity::class.java)) }
-            R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
-            R.id.app_bar_settings ->
-                activity?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.add(R.id.container, SettingsFragment())
-                    ?.addToBackStack(null)?.commit()
-
             R.id.home -> {
                 activity?.let {
                     BottomNavigationDrawerFragment().show(it.supportFragmentManager, "tag")
                 }
             }
 
-            R.id.app_bar_api -> activity?.let { startActivity(Intent(it, ApiActivity::class.java))}
+            R.id.app_bar_fav ->
+                activity?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.replace(R.id.container, ApiBottomFragment())
+                    ?.addToBackStack(null)?.commit()
+
+            R.id.app_bar_api ->
+                activity?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.replace(R.id.container, ApiFragment())
+                    ?.addToBackStack(null)?.commit()
+
+            R.id.app_bar_settings ->
+                activity?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.add(R.id.container, SettingsFragment())
+                    ?.addToBackStack(null)?.commit()
+
+            R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
 
         }
         return super.onOptionsItemSelected(item)
