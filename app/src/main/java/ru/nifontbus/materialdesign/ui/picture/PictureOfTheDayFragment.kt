@@ -49,7 +49,8 @@ class PictureOfTheDayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getData().observe(viewLifecycleOwner, { renderData(it) })
+        viewModel.liveData.observe(viewLifecycleOwner, { renderData(it) })
+
         binding.inputLayout.setEndIconOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
                 val req = binding.inputEditText.text.toString()
@@ -59,6 +60,8 @@ class PictureOfTheDayFragment : Fragment() {
         setBottomAppBar(view)
         setBottomSheetBehavior(binding.includedBottomSheet.bottomSheetContainer)
         setDatePick()
+
+        viewModel.sendServerRequest()
 
 //        bottomSheetBehavior.addBottomSheetCallback(object :
 //            BottomSheetBehavior.BottomSheetCallback() {

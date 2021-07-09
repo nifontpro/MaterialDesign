@@ -15,17 +15,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class PictureOfTheDayViewModel(
-    private val liveData: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
+    val liveData: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
     private val retrofitImpl: PODRetrofitImpl = PODRetrofitImpl()
 ) :
     ViewModel() {
 
-    fun getData(): LiveData<PictureOfTheDayData> {
-        sendServerRequest()
-        return liveData
-    }
-
-    private fun sendServerRequest() {
+    fun sendServerRequest() {
         liveData.value = PictureOfTheDayData.Loading(null)
         val apiKey: String = BuildConfig.NASA_API_KEY
         if (apiKey.isBlank()) {
@@ -64,4 +59,9 @@ class PictureOfTheDayViewModel(
             })
         }
     }
+}
+
+// https://stackoverflow.com/questions/47941537/notify-observer-when-item-is-added-to-list-of-livedata/49022687#49022687
+fun <T> MutableLiveData<T>.notifyObserver() {
+    this.postValue(value)
 }
