@@ -35,4 +35,6 @@
     <color name="gray_light">#c1d5e0</color>
     <color name="gray_background">#f1f5f0</color>
 
+    <color name="colorAccent40Alfa">#662962FF</color>
+
 </resources>
