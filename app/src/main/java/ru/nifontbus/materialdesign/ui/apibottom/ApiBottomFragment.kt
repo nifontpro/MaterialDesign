@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import geekbarains.material.ui.api.MarsFragment
+import geekbarains.material.ui.api.WeatherFragment
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.databinding.FragmentApiBinding
 import ru.nifontbus.materialdesign.databinding.FragmentApiBottomBinding
+import ru.nifontbus.materialdesign.ui.api.EarthFragment
 
-class ApiBottomFragment: Fragment() {
+class ApiBottomFragment : Fragment() {
     private var _binding: FragmentApiBottomBinding? = null
     private val binding get() = _binding!!
 
@@ -18,24 +21,26 @@ class ApiBottomFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding =  FragmentApiBottomBinding.inflate(inflater, container, false)
+        _binding = FragmentApiBottomBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        replaceFragment(EarthFragment())
         binding.bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bottom_view_earth -> {
-                    //Item tapped
+                    replaceFragment(EarthFragment())
                     true
+
                 }
                 R.id.bottom_view_mars -> {
-                    //Item tapped
+                    replaceFragment(MarsFragment())
                     true
                 }
                 R.id.bottom_view_weather -> {
-                    //Item tapped
+                    replaceFragment(WeatherFragment())
                     true
                 }
                 else -> false
@@ -55,6 +60,12 @@ class ApiBottomFragment: Fragment() {
             }
         }
 
+    }
+
+    fun replaceFragment(fragment: Fragment){
+        childFragmentManager.beginTransaction()
+            .replace(R.id.activity_api_bottom_container, fragment)
+            .commit()
     }
 
     override fun onDestroyView() {

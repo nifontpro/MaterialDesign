@@ -20,6 +20,7 @@ import ru.nifontbus.materialdesign.ui.api.ApiFragment
 import ru.nifontbus.materialdesign.ui.apibottom.ApiBottomFragment
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
+import ru.nifontbus.materialdesign.ui.view_pager.MainPhotoFragment
 
 class PictureOfTheDayFragment : Fragment() {
 
@@ -37,7 +38,6 @@ class PictureOfTheDayFragment : Fragment() {
     ): View {
         _binding = MainFragmentBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,7 +90,8 @@ class PictureOfTheDayFragment : Fragment() {
             }
 
             R.id.app_bar_fav -> replaceFragment(ApiBottomFragment())
-            R.id.app_bar_api -> replaceFragment(ApiFragment())
+//            R.id.app_bar_api -> replaceFragment(ApiFragment())
+            R.id.app_bar_api -> replaceFragment(MainPhotoFragment())
             R.id.app_bar_settings -> replaceFragment(SettingsFragment())
             R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
 
@@ -153,7 +154,6 @@ class PictureOfTheDayFragment : Fragment() {
                     //Coil в работе: достаточно вызвать у нашего ImageView
                     //нужную extension-функцию и передать ссылку и заглушки для placeholder
 
-//                    binding.imageView.load("https://freepngimg.com/thumb/city/36275-3-city-hd.png") {
                     binding.imageView.load(url) {
                         lifecycle(this@PictureOfTheDayFragment)
                         error(R.drawable.ic_load_error_vector)
@@ -186,13 +186,6 @@ class PictureOfTheDayFragment : Fragment() {
         binding.includedLoadingLayout.loadingLayout.show()
     }
 
-    private fun Fragment.toast(string: String?) {
-        Toast.makeText(context, string, Toast.LENGTH_SHORT).apply {
-            setGravity(Gravity.BOTTOM, 0, 250)
-            show()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -202,19 +195,26 @@ class PictureOfTheDayFragment : Fragment() {
         fun newInstance() = PictureOfTheDayFragment()
         private var isMain = true
     }
+}
 
-    // Управлять видимостью View:
-    fun View.show(): View {
-        if (visibility != View.VISIBLE) {
-            visibility = View.VISIBLE
-        }
-        return this
+// Управлять видимостью View:
+fun View.show(): View {
+    if (visibility != View.VISIBLE) {
+        visibility = View.VISIBLE
     }
+    return this
+}
 
-    fun View.hide(): View {
-        if (visibility != View.GONE) {
-            visibility = View.GONE
-        }
-        return this
+fun View.hide(): View {
+    if (visibility != View.GONE) {
+        visibility = View.GONE
+    }
+    return this
+}
+
+fun Fragment.toast(string: String?) {
+    Toast.makeText(context, string, Toast.LENGTH_SHORT).apply {
+        setGravity(Gravity.BOTTOM, 0, 250)
+        show()
     }
 }
