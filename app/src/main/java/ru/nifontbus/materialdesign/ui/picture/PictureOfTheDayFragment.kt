@@ -1,8 +1,10 @@
 package ru.nifontbus.materialdesign.ui.picture
 
 import android.content.Intent
+import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import coil.api.load
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.datepicker.MaterialDatePicker
 import ru.nifontbus.materialdesign.MainActivity
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
@@ -20,6 +23,9 @@ import ru.nifontbus.materialdesign.ui.apibottom.ApiBottomFragment
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
 import ru.nifontbus.materialdesign.ui.view_pager.MainPhotoFragment
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class PictureOfTheDayFragment : Fragment() {
 
@@ -30,6 +36,8 @@ class PictureOfTheDayFragment : Fragment() {
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
+
+    //private var photoDate: LocalDate = LocalDate.now()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +58,7 @@ class PictureOfTheDayFragment : Fragment() {
         }
         setBottomAppBar(view)
         setBottomSheetBehavior(binding.includedBottomSheet.bottomSheetContainer)
+        setDatePick()
 
 //        bottomSheetBehavior.addBottomSheetCallback(object :
 //            BottomSheetBehavior.BottomSheetCallback() {
@@ -68,6 +77,21 @@ class PictureOfTheDayFragment : Fragment() {
 //                TODO("Not yet implemented")
 //            }
 //        })
+    }
+
+    private val datePicker = MaterialDatePicker.Builder.datePicker()
+        .setTitleText("Выберите дату")
+        .build()
+
+    private fun setDatePick() {
+        binding.btnChangeDate.setOnClickListener {
+            datePicker.show(childFragmentManager, "tag");
+        }
+        val outputDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        datePicker.addOnPositiveButtonClickListener {
+            val text = outputDateFormat.format(it)
+            Log.e("my", "date $text")
+        }
     }
 
     private fun setBottomSheetBehavior(bottomSheet: ConstraintLayout) {
@@ -162,6 +186,7 @@ class PictureOfTheDayFragment : Fragment() {
                         .text = serverResponseData.title
                     binding.includedBottomSheet.bottomSheetDescription
                         .text = serverResponseData.explanation
+                    binding.tvDate.text = serverResponseData.date.toString()
                 }
                 hideLoading()
             }

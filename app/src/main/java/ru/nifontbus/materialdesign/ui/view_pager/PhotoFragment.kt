@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.api.load
+import com.google.android.material.datepicker.MaterialDatePicker
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
 import ru.nifontbus.materialdesign.databinding.PhotoFragmentBinding
@@ -15,7 +16,7 @@ import ru.nifontbus.materialdesign.ui.picture.show
 import ru.nifontbus.materialdesign.ui.picture.toast
 import java.time.LocalDate
 
-class PhotoFragment(private val photoDate: LocalDate): Fragment() {
+class PhotoFragment(private val photoDate: LocalDate) : Fragment() {
     private var _binding: PhotoFragmentBinding? = null
     private val binding get() = _binding!!
 

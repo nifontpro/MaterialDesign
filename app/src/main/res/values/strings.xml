@@ -10,4 +10,5 @@
     <string name="theme_sea">Морская</string>
     <string name="theme_indigo">Индиго</string>
     <string name="theme_gray">Серая</string>
+    <string name="change_date">Выбрать дату...</string>
 </resources>
