@@ -15,7 +15,7 @@ import ru.nifontbus.materialdesign.ui.picture.show
 import ru.nifontbus.materialdesign.ui.picture.toast
 import java.time.LocalDate
 
-class PhotoFragment(val photoDate: LocalDate): Fragment() {
+class PhotoFragment(private val photoDate: LocalDate): Fragment() {
     private var _binding: PhotoFragmentBinding? = null
     private val binding get() = _binding!!
 

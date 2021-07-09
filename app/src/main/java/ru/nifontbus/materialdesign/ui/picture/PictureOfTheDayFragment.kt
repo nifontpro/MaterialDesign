@@ -15,8 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.nifontbus.materialdesign.MainActivity
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
-import ru.nifontbus.materialdesign.databinding.MainFragmentBinding
-import ru.nifontbus.materialdesign.ui.api.ApiFragment
+import ru.nifontbus.materialdesign.databinding.FragmentMainBinding
 import ru.nifontbus.materialdesign.ui.apibottom.ApiBottomFragment
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
@@ -24,7 +23,7 @@ import ru.nifontbus.materialdesign.ui.view_pager.MainPhotoFragment
 
 class PictureOfTheDayFragment : Fragment() {
 
-    private var _binding: MainFragmentBinding? = null
+    private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -36,7 +35,7 @@ class PictureOfTheDayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = MainFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
