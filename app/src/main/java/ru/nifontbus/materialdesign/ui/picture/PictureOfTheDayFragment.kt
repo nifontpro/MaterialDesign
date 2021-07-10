@@ -3,6 +3,7 @@ package ru.nifontbus.materialdesign.ui.picture
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -12,19 +13,24 @@ import androidx.lifecycle.ViewModelProvider
 import coil.api.load
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.datepicker.MaterialDatePicker
 import ru.nifontbus.materialdesign.MainActivity
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
-import ru.nifontbus.materialdesign.databinding.MainFragmentBinding
-import ru.nifontbus.materialdesign.ui.api.ApiFragment
+import ru.nifontbus.materialdesign.data.StateFragment
+import ru.nifontbus.materialdesign.databinding.FragmentMainBinding
 import ru.nifontbus.materialdesign.ui.apibottom.ApiBottomFragment
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
 import ru.nifontbus.materialdesign.ui.view_pager.MainPhotoFragment
+import java.time.Instant
+import java.time.ZoneId
+import java.util.*
+
 
 class PictureOfTheDayFragment : Fragment() {
 
-    private var _binding: MainFragmentBinding? = null
+    private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -32,17 +38,20 @@ class PictureOfTheDayFragment : Fragment() {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
 
+    //private var photoDate: LocalDate = LocalDate.now()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = MainFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getData().observe(viewLifecycleOwner, { renderData(it) })
+        viewModel.liveData.observe(viewLifecycleOwner, { renderData(it) })
+
         binding.inputLayout.setEndIconOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
                 val req = binding.inputEditText.text.toString()
@@ -51,24 +60,28 @@ class PictureOfTheDayFragment : Fragment() {
         }
         setBottomAppBar(view)
         setBottomSheetBehavior(binding.includedBottomSheet.bottomSheetContainer)
+        setDatePick()
 
-//        bottomSheetBehavior.addBottomSheetCallback(object :
-//            BottomSheetBehavior.BottomSheetCallback() {
-//            override fun onStateChanged(bottomSheet: View, newState: Int) {
-//                when (newState) {
-//                    BottomSheetBehavior.STATE_DRAGGING -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_COLLAPSED -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_EXPANDED -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_HALF_EXPANDED -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_HIDDEN -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_SETTLING -> TODO("not implemented")
-//                }
-//            }
-//
-//            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-//                TODO("Not yet implemented")
-//            }
-//        })
+        viewModel.sendServerRequest()
+    }
+
+    private fun setDatePick() {
+        binding.btnChangeDate.setOnClickListener {
+            val zoneId = ZoneId.systemDefault()
+            val localDateInMilli =
+                viewModel.liveData.value!!.date.atStartOfDay(zoneId).toEpochSecond() * 1000
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Выберите дату")
+                .setSelection(localDateInMilli)
+                .build()
+            datePicker.show(childFragmentManager, "tag");
+
+            datePicker.addOnPositiveButtonClickListener {
+                // convert - https://howtoprogram.xyz/2017/02/11/convert-milliseconds-localdatetime-java/
+                val date = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                viewModel.setDate(date)
+            }
+        }
     }
 
     private fun setBottomSheetBehavior(bottomSheet: ConstraintLayout) {
@@ -140,8 +153,8 @@ class PictureOfTheDayFragment : Fragment() {
         }
     }
 
-    private fun renderData(data: PictureOfTheDayData) {
-        when (data) {
+    private fun renderData(state: StateFragment) {
+        when (val data = state.photo) {
             is PictureOfTheDayData.Success -> {
                 val serverResponseData = data.serverResponseData
                 val url = serverResponseData.url
@@ -159,10 +172,12 @@ class PictureOfTheDayFragment : Fragment() {
                         error(R.drawable.ic_load_error_vector)
 //                        placeholder(R.drawable.ic_no_photo_vector)
                     }
+
                     binding.includedBottomSheet.bottomSheetDescriptionHeader
                         .text = serverResponseData.title
                     binding.includedBottomSheet.bottomSheetDescription
                         .text = serverResponseData.explanation
+                    binding.tvDate.text = serverResponseData.date.toString()
                 }
                 hideLoading()
             }
@@ -171,19 +186,20 @@ class PictureOfTheDayFragment : Fragment() {
                 showLoading()
             }
             is PictureOfTheDayData.Error -> {
+                hideLoading()
                 toast(data.error.message)
             }
         }
     }
 
     private fun hideLoading() {
-//        binding.imageView.show()
         binding.includedLoadingLayout.loadingLayout.hide()
+        Log.e("my", "Hide Loading.")
     }
 
     private fun showLoading() {
-//        binding.imageView.setImageIcon(null)
         binding.includedLoadingLayout.loadingLayout.show()
+        Log.e("my", "Show Loading.")
     }
 
     override fun onDestroyView() {
