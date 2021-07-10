@@ -1,7 +1,6 @@
 package ru.nifontbus.materialdesign.ui.picture
 
 import android.content.Intent
-import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -18,14 +17,18 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import ru.nifontbus.materialdesign.MainActivity
 import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
+import ru.nifontbus.materialdesign.data.StateFragment
 import ru.nifontbus.materialdesign.databinding.FragmentMainBinding
 import ru.nifontbus.materialdesign.ui.apibottom.ApiBottomFragment
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
 import ru.nifontbus.materialdesign.ui.view_pager.MainPhotoFragment
+import java.time.Instant
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.ZoneId
+import java.time.temporal.TemporalQueries.localDate
 import java.util.*
+
 
 class PictureOfTheDayFragment : Fragment() {
 
@@ -82,18 +85,34 @@ class PictureOfTheDayFragment : Fragment() {
 //        })
     }
 
-    private val datePicker = MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Выберите дату")
+
+    private var datePicker = MaterialDatePicker.Builder.datePicker()
         .build()
+
+/*    private val datePicker = MaterialDatePicker.Builder.datePicker()
+        .setTitleText("Выберите дату")
+        .build()*/
 
     private fun setDatePick() {
         binding.btnChangeDate.setOnClickListener {
+            val zoneId = ZoneId.systemDefault()
+            val localDateInMilli = viewModel.liveData.value!!.date.atStartOfDay(zoneId).toEpochSecond() * 1000
+            Log.e("my", localDateInMilli.toString())
+ /*           datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Выберите дату")
+                .setSelection(localDateInMilli)
+                .build()*/
             datePicker.show(childFragmentManager, "tag");
         }
-        val outputDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         datePicker.addOnPositiveButtonClickListener {
-            val text = outputDateFormat.format(it)
-            Log.e("my", "date $text")
+            // convert - https://howtoprogram.xyz/2017/02/11/convert-milliseconds-localdatetime-java/
+            val date: LocalDate =
+                Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+            viewModel.changeData(date)
+
+            /*        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    val ds: String = date.format(formatter)
+                    Log.e("my", ds)*/
         }
     }
 
@@ -166,8 +185,8 @@ class PictureOfTheDayFragment : Fragment() {
         }
     }
 
-    private fun renderData(data: PictureOfTheDayData) {
-        when (data) {
+    private fun renderData(state: StateFragment) {
+        when (val data = state.photo) {
             is PictureOfTheDayData.Success -> {
                 val serverResponseData = data.serverResponseData
                 val url = serverResponseData.url
