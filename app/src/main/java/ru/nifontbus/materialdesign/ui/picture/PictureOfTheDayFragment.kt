@@ -24,9 +24,7 @@ import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
 import ru.nifontbus.materialdesign.ui.view_pager.MainPhotoFragment
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
-import java.time.temporal.TemporalQueries.localDate
 import java.util.*
 
 
@@ -65,54 +63,24 @@ class PictureOfTheDayFragment : Fragment() {
         setDatePick()
 
         viewModel.sendServerRequest()
-
-//        bottomSheetBehavior.addBottomSheetCallback(object :
-//            BottomSheetBehavior.BottomSheetCallback() {
-//            override fun onStateChanged(bottomSheet: View, newState: Int) {
-//                when (newState) {
-//                    BottomSheetBehavior.STATE_DRAGGING -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_COLLAPSED -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_EXPANDED -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_HALF_EXPANDED -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_HIDDEN -> TODO("not implemented")
-//                    BottomSheetBehavior.STATE_SETTLING -> TODO("not implemented")
-//                }
-//            }
-//
-//            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-//                TODO("Not yet implemented")
-//            }
-//        })
     }
-
-
-    private var datePicker = MaterialDatePicker.Builder.datePicker()
-        .build()
-
-/*    private val datePicker = MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Выберите дату")
-        .build()*/
 
     private fun setDatePick() {
         binding.btnChangeDate.setOnClickListener {
             val zoneId = ZoneId.systemDefault()
-            val localDateInMilli = viewModel.liveData.value!!.date.atStartOfDay(zoneId).toEpochSecond() * 1000
-            Log.e("my", localDateInMilli.toString())
- /*           datePicker = MaterialDatePicker.Builder.datePicker()
+            val localDateInMilli =
+                viewModel.liveData.value!!.date.atStartOfDay(zoneId).toEpochSecond() * 1000
+            val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Выберите дату")
                 .setSelection(localDateInMilli)
-                .build()*/
+                .build()
             datePicker.show(childFragmentManager, "tag");
-        }
-        datePicker.addOnPositiveButtonClickListener {
-            // convert - https://howtoprogram.xyz/2017/02/11/convert-milliseconds-localdatetime-java/
-            val date: LocalDate =
-                Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
-            viewModel.changeData(date)
 
-            /*        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    val ds: String = date.format(formatter)
-                    Log.e("my", ds)*/
+            datePicker.addOnPositiveButtonClickListener {
+                // convert - https://howtoprogram.xyz/2017/02/11/convert-milliseconds-localdatetime-java/
+                val date = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                viewModel.setDate(date)
+            }
         }
     }
 
@@ -204,6 +172,7 @@ class PictureOfTheDayFragment : Fragment() {
                         error(R.drawable.ic_load_error_vector)
 //                        placeholder(R.drawable.ic_no_photo_vector)
                     }
+
                     binding.includedBottomSheet.bottomSheetDescriptionHeader
                         .text = serverResponseData.title
                     binding.includedBottomSheet.bottomSheetDescription
@@ -217,19 +186,20 @@ class PictureOfTheDayFragment : Fragment() {
                 showLoading()
             }
             is PictureOfTheDayData.Error -> {
+                hideLoading()
                 toast(data.error.message)
             }
         }
     }
 
     private fun hideLoading() {
-//        binding.imageView.show()
         binding.includedLoadingLayout.loadingLayout.hide()
+        Log.e("my", "Hide Loading.")
     }
 
     private fun showLoading() {
-//        binding.imageView.setImageIcon(null)
         binding.includedLoadingLayout.loadingLayout.show()
+        Log.e("my", "Show Loading.")
     }
 
     override fun onDestroyView() {

@@ -23,7 +23,7 @@ class PictureOfTheDayViewModel(
         liveData.value = StateFragment()
     }*/
 
-    fun changeData(newDate: LocalDate) {
+    fun setDate(newDate: LocalDate) {
         liveData.value?.date = newDate
         sendServerRequest()
     }
