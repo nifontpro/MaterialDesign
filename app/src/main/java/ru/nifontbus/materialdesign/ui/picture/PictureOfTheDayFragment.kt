@@ -96,33 +96,27 @@ class PictureOfTheDayFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.home -> {
-                activity?.let {
-                    BottomNavigationDrawerFragment().show(it.supportFragmentManager, "tag")
-                }
-            }
-
+            android.R.id.home -> BottomNavigationDrawerFragment().show(childFragmentManager, "tag")
             R.id.app_bar_fav -> replaceFragment(ApiBottomFragment())
-//            R.id.app_bar_api -> replaceFragment(ApiFragment())
             R.id.app_bar_api -> replaceFragment(MainPhotoFragment())
             R.id.app_bar_settings -> replaceFragment(SettingsFragment())
             R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
-
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+/*    private fun replaceFragment(fragment: Fragment) {
         activity?.supportFragmentManager
             ?.beginTransaction()
             ?.replace(R.id.container, fragment)
             ?.addToBackStack(null)
             ?.commit()
-    }
+    }*/
 
     private fun setBottomAppBar(view: View) {
         val context = activity as MainActivity
-        context.setSupportActionBar(view.findViewById(R.id.bottom_app_bar))
+//        context.setSupportActionBar(view.findViewById(R.id.bottom_app_bar))
+        context.setSupportActionBar(binding.bottomAppBar)
         setHasOptionsMenu(true)
 
         binding.fab.setOnClickListener {
@@ -233,4 +227,12 @@ fun Fragment.toast(string: String?) {
         setGravity(Gravity.BOTTOM, 0, 250)
         show()
     }
+}
+
+fun Fragment.replaceFragment(fragment: Fragment) {
+    activity?.supportFragmentManager
+        ?.beginTransaction()
+        ?.replace(R.id.container, fragment)
+        ?.addToBackStack(null)
+        ?.commit()
 }
