@@ -1,4 +1,4 @@
-package ru.nifontbus.materialdesign.ui.animations
+package ru.nifontbus.materialdesign.ui.animations.one
 
 import android.graphics.Rect
 import android.os.Bundle
@@ -11,7 +11,9 @@ import androidx.transition.*
 import ru.nifontbus.materialdesign.databinding.FragmentAnimationsExplodeBinding
 import ru.nifontbus.materialdesign.R
 
-class AnimationsFragmentExpl : Fragment() {
+// Аннимация RecyclerView
+class AnimationsFragmentRecycler : Fragment() {
+
     private var _binding: FragmentAnimationsExplodeBinding? = null
     private val binding get() = _binding!!
 
@@ -37,11 +39,19 @@ class AnimationsFragmentExpl : Fragment() {
                 return viewRect
             }
         }
-        explode.duration = 1000
-        TransitionManager.beginDelayedTransition(binding.recyclerView, explode)
+        explode.excludeTarget(clickedView, true)
+        val set = TransitionSet()
+            .addTransition(explode)
+            .addTransition(Fade().addTarget(clickedView))
+            .addListener(object : TransitionListenerAdapter() {
+                override fun onTransitionEnd(transition: Transition) {
+                    transition.removeListener(this)
+//                    onBackPressed()
+                }
+            })
+        TransitionManager.beginDelayedTransition(binding.recyclerView, set)
         binding.recyclerView.adapter = null
     }
-
 
     inner class Adapter : RecyclerView.Adapter<ViewHolder>() {
 

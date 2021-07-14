@@ -1,4 +1,4 @@
-package ru.nifontbus.materialdesign.ui.animations
+package ru.nifontbus.materialdesign.ui.animations.one
 
 import android.os.Bundle
 import android.view.Gravity
@@ -11,7 +11,7 @@ import ru.nifontbus.materialdesign.databinding.FragmentAnimationsBinding
 import ru.nifontbus.materialdesign.ui.picture.hide
 import ru.nifontbus.materialdesign.ui.picture.show
 
-class AnimationsFragment: Fragment() {
+class AnimationsFragmentFirst: Fragment() {
     private var _binding: FragmentAnimationsBinding? = null
     private val binding get() = _binding!!
     private var textIsVisible = false
