@@ -5,11 +5,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeImageTransform
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import coil.api.load
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -37,8 +42,7 @@ class PictureOfTheDayFragment : Fragment() {
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
-
-    //private var photoDate: LocalDate = LocalDate.now()
+    private var isExpanded = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,12 +62,33 @@ class PictureOfTheDayFragment : Fragment() {
                 data = Uri.parse("https://en.wikipedia.org/wiki/$req")
             })
         }
-        setBottomAppBar(view)
+        setBottomAppBar()
         setBottomSheetBehavior(binding.includedBottomSheet.bottomSheetContainer)
         setDatePick()
+        setImageClick()
 
         viewModel.sendServerRequest()
     }
+
+    private fun setImageClick() {
+        binding.imageView.setOnClickListener {
+
+            isExpanded = !isExpanded
+            TransitionManager.beginDelayedTransition(
+                binding.root, TransitionSet()
+                    .addTransition(ChangeBounds())
+                    .addTransition(ChangeImageTransform())
+            )
+
+            val params: ViewGroup.LayoutParams = binding.imageView.layoutParams
+            params.height =
+                if (isExpanded) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+            binding.imageView.layoutParams = params
+            binding.imageView.scaleType =
+                if (isExpanded) ImageView.ScaleType.CENTER_CROP else ImageView.ScaleType.FIT_CENTER
+        }
+    }
+
 
     private fun setDatePick() {
         binding.btnChangeDate.setOnClickListener {
@@ -74,7 +99,7 @@ class PictureOfTheDayFragment : Fragment() {
                 .setTitleText("Выберите дату")
                 .setSelection(localDateInMilli)
                 .build()
-            datePicker.show(childFragmentManager, "tag");
+            datePicker.show(childFragmentManager, "tag")
 
             datePicker.addOnPositiveButtonClickListener {
                 // convert - https://howtoprogram.xyz/2017/02/11/convert-milliseconds-localdatetime-java/
@@ -96,33 +121,18 @@ class PictureOfTheDayFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.home -> {
-                activity?.let {
-                    BottomNavigationDrawerFragment().show(it.supportFragmentManager, "tag")
-                }
-            }
-
+            android.R.id.home -> BottomNavigationDrawerFragment().show(childFragmentManager, "tag")
             R.id.app_bar_fav -> replaceFragment(ApiBottomFragment())
-//            R.id.app_bar_api -> replaceFragment(ApiFragment())
             R.id.app_bar_api -> replaceFragment(MainPhotoFragment())
             R.id.app_bar_settings -> replaceFragment(SettingsFragment())
             R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
-
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        activity?.supportFragmentManager
-            ?.beginTransaction()
-            ?.replace(R.id.container, fragment)
-            ?.addToBackStack(null)
-            ?.commit()
-    }
-
-    private fun setBottomAppBar(view: View) {
+    private fun setBottomAppBar() {
         val context = activity as MainActivity
-        context.setSupportActionBar(view.findViewById(R.id.bottom_app_bar))
+        context.setSupportActionBar(binding.bottomAppBar)
         setHasOptionsMenu(true)
 
         binding.fab.setOnClickListener {
@@ -233,4 +243,12 @@ fun Fragment.toast(string: String?) {
         setGravity(Gravity.BOTTOM, 0, 250)
         show()
     }
+}
+
+fun Fragment.replaceFragment(fragment: Fragment) {
+    activity?.supportFragmentManager
+        ?.beginTransaction()
+        ?.replace(R.id.container, fragment)
+        ?.addToBackStack(null)
+        ?.commit()
 }

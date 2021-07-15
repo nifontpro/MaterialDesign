@@ -28,7 +28,8 @@ class ApiBottomFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         replaceFragment(EarthFragment())
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+//        binding.bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bottom_view_earth -> {
                     replaceFragment(EarthFragment())
@@ -46,7 +47,7 @@ class ApiBottomFragment : Fragment() {
                 else -> false
             }
         }
-        binding.bottomNavigationView.setOnNavigationItemReselectedListener { item ->
+        binding.bottomNavigationView.setOnItemReselectedListener { item ->
             when (item.itemId) {
                 R.id.bottom_view_earth -> {
                     //Item tapped
@@ -62,7 +63,7 @@ class ApiBottomFragment : Fragment() {
 
     }
 
-    fun replaceFragment(fragment: Fragment){
+    private fun replaceFragment(fragment: Fragment){
         childFragmentManager.beginTransaction()
             .replace(R.id.activity_api_bottom_container, fragment)
             .commit()
