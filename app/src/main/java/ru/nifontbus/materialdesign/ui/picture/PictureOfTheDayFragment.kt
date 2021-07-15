@@ -44,8 +44,6 @@ class PictureOfTheDayFragment : Fragment() {
     }
     private var isExpanded = false
 
-    //private var photoDate: LocalDate = LocalDate.now()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,7 +62,7 @@ class PictureOfTheDayFragment : Fragment() {
                 data = Uri.parse("https://en.wikipedia.org/wiki/$req")
             })
         }
-        setBottomAppBar(view)
+        setBottomAppBar()
         setBottomSheetBehavior(binding.includedBottomSheet.bottomSheetContainer)
         setDatePick()
         setImageClick()
@@ -74,6 +72,7 @@ class PictureOfTheDayFragment : Fragment() {
 
     private fun setImageClick() {
         binding.imageView.setOnClickListener {
+
             isExpanded = !isExpanded
             TransitionManager.beginDelayedTransition(
                 binding.root, TransitionSet()
@@ -100,7 +99,7 @@ class PictureOfTheDayFragment : Fragment() {
                 .setTitleText("Выберите дату")
                 .setSelection(localDateInMilli)
                 .build()
-            datePicker.show(childFragmentManager, "tag");
+            datePicker.show(childFragmentManager, "tag")
 
             datePicker.addOnPositiveButtonClickListener {
                 // convert - https://howtoprogram.xyz/2017/02/11/convert-milliseconds-localdatetime-java/
@@ -131,17 +130,8 @@ class PictureOfTheDayFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-/*    private fun replaceFragment(fragment: Fragment) {
-        activity?.supportFragmentManager
-            ?.beginTransaction()
-            ?.replace(R.id.container, fragment)
-            ?.addToBackStack(null)
-            ?.commit()
-    }*/
-
-    private fun setBottomAppBar(view: View) {
+    private fun setBottomAppBar() {
         val context = activity as MainActivity
-//        context.setSupportActionBar(view.findViewById(R.id.bottom_app_bar))
         context.setSupportActionBar(binding.bottomAppBar)
         setHasOptionsMenu(true)
 
