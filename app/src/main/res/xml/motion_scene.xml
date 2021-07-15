@@ -3,7 +3,7 @@
 
     <Transition
         motion:constraintSetStart="@layout/fragment_main_start"
-        motion:constraintSetEnd="@layout/fragment_main"
+        motion:constraintSetEnd="@layout/fragment_main2"
         motion:duration="1000">
 
         <OnClick motion:targetId="@id/wiki_button" />
