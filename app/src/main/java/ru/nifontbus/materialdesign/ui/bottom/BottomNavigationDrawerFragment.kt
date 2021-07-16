@@ -11,6 +11,7 @@ import ru.nifontbus.materialdesign.ui.animations.one.AnimationsFragment
 import ru.nifontbus.materialdesign.ui.animations.one.AnimationsFragmentImage
 import ru.nifontbus.materialdesign.ui.animations.two.AnimationsFragmentBonus
 import ru.nifontbus.materialdesign.ui.picture.replaceFragment
+import ru.nifontbus.materialdesign.ui.recycler.RecyclerFragment
 
 class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
 
@@ -32,6 +33,7 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
             when (menuItem.itemId) {
                 R.id.navigation_one -> replaceFragment(AnimationsFragment())
                 R.id.navigation_two -> replaceFragment(AnimationsFragmentBonus())
+                R.id.navigation_three  -> replaceFragment(RecyclerFragment())
             }
             dismiss()
             true
