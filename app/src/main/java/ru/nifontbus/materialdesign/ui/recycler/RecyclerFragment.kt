@@ -23,15 +23,10 @@ class RecyclerFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val data = arrayListOf(
-            Data("Earth"),
-            Data("Earth"),
-            Data("Mars", ""),
-            Data("Earth"),
-            Data("Earth"),
-            Data("Earth"),
-            Data("Mars", null)
+            Data("Mars", "")
         )
-        binding.recyclerView.adapter = RecyclerAdapter(
+        data.add(0, Data("Header"))
+        val adapter = RecyclerAdapter(
             object : OnListItemClickListener{
                 override fun onItemClick(data: Data) {
                     Toast.makeText(requireContext(), data.someText, Toast.LENGTH_SHORT).show()
@@ -39,6 +34,9 @@ class RecyclerFragment: Fragment() {
             },
             data
         )
+        binding.recyclerView.adapter = adapter
+        binding.recyclerActivityFAB.setOnClickListener { adapter.appendItem() }
+
     }
 
     override fun onDestroyView() {
