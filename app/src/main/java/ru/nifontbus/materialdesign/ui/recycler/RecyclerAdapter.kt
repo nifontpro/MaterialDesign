@@ -1,9 +1,12 @@
 package ru.nifontbus.materialdesign.ui.recycler
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.nifontbus.materialdesign.databinding.RecyclerItemEarthBinding
 import ru.nifontbus.materialdesign.databinding.RecyclerItemHeaderBinding
@@ -15,6 +18,7 @@ class RecyclerAdapter(
 
     private val onListItemClickListener: OnListItemClickListener,
     private var data: MutableList<Data>,
+    private val dragListener: OnStartDragListener
 
     ) : RecyclerView.Adapter<RecyclerAdapter.BaseViewHolder>(), ItemTouchHelperAdapter {
 
@@ -106,7 +110,7 @@ class RecyclerAdapter(
         }
 
         override fun onItemClear() {
-            itemView.setBackgroundColor(0)
+            itemView.setBackgroundColor(Color.WHITE)
         }
     }
 
@@ -116,6 +120,9 @@ class RecyclerAdapter(
         override fun bind(data: Data) {
             binding.root.setOnClickListener { onListItemClickListener.onItemClick(data) }
         }
+
+        override fun onItemSelected() {}
+        override fun onItemClear() {}
     }
 
     inner class EarthViewHolder(val binding: RecyclerItemEarthBinding) :
@@ -132,6 +139,7 @@ class RecyclerAdapter(
     inner class MarsViewHolder(val binding: RecyclerItemMarsBinding) :
         BaseViewHolder(binding.root) {
 
+        @SuppressLint("ClickableViewAccessibility")
         override fun bind(data: Data) {
             binding.root.setOnClickListener { onListItemClickListener.onItemClick(data) }
             binding.addItemImageView.setOnClickListener { addItem() }
@@ -141,6 +149,12 @@ class RecyclerAdapter(
             if (data.deployed) binding.marsDescriptionTextView.show()
             else binding.marsDescriptionTextView.hide()
             binding.marsTextView.setOnClickListener { toggleText() }
+            binding.dragHandleImageView.setOnTouchListener { _, event ->
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    dragListener.onStartDrag(this)
+                }
+                false
+            }
         }
 
         private fun toggleText() {
@@ -162,5 +176,13 @@ class RecyclerAdapter(
         private const val TYPE_EARTH = 0
         private const val TYPE_MARS = 1
         private const val TYPE_HEADER = 2
+    }
+
+    interface OnListItemClickListener {
+        fun onItemClick(data: Data)
+    }
+
+    interface OnStartDragListener {
+        fun onStartDrag(viewHolder: RecyclerView.ViewHolder)
     }
 }
