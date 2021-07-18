@@ -2,5 +2,6 @@ package ru.nifontbus.materialdesign.ui.recycler
 
 data class Data(
     val someText: String = "Text",
-    val someDescription: String? = "Description"
+    val someDescription: String? = "Description",
+    var deployed: Boolean = false
 )

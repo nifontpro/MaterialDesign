@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import ru.nifontbus.materialdesign.databinding.FragmentRecyclerBinding
 
 class RecyclerFragment: Fragment() {
@@ -36,6 +37,8 @@ class RecyclerFragment: Fragment() {
         )
         binding.recyclerView.adapter = adapter
         binding.recyclerActivityFAB.setOnClickListener { adapter.appendItem() }
+        ItemTouchHelper(ItemTouchHelperCallback(adapter))
+            .attachToRecyclerView(binding.recyclerView)
 
     }
 

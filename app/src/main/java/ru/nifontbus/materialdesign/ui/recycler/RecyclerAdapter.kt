@@ -1,19 +1,22 @@
 package ru.nifontbus.materialdesign.ui.recycler
 
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import geekbarains.material.ui.recycler.BaseViewHolder
 import ru.nifontbus.materialdesign.databinding.RecyclerItemEarthBinding
 import ru.nifontbus.materialdesign.databinding.RecyclerItemHeaderBinding
 import ru.nifontbus.materialdesign.databinding.RecyclerItemMarsBinding
+import ru.nifontbus.materialdesign.ui.picture.hide
+import ru.nifontbus.materialdesign.ui.picture.show
 
 class RecyclerAdapter(
 
     private val onListItemClickListener: OnListItemClickListener,
     private var data: MutableList<Data>,
 
-    ) : RecyclerView.Adapter<BaseViewHolder>() {
+    ) : RecyclerView.Adapter<RecyclerAdapter.BaseViewHolder>(), ItemTouchHelperAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         // https://www.geeksforgeeks.org/how-to-use-view-binding-in-recyclerview-adapter-class-in-android/
@@ -50,6 +53,51 @@ class RecyclerAdapter(
         }
     }
 
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        data.removeAt(fromPosition).apply {
+            data.add(if (toPosition > fromPosition) toPosition - 1 else toPosition, this)
+        }
+        notifyItemMoved(fromPosition, toPosition)
+    }
+
+    override fun onItemDismiss(position: Int) {
+        data.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        abstract fun bind(data: Data)
+
+        fun addItem() {
+            data.add(layoutPosition, generateItem())
+            notifyItemInserted(layoutPosition)
+        }
+
+        fun removeItem() {
+            data.removeAt(layoutPosition)
+            notifyItemRemoved(layoutPosition)
+        }
+
+        fun moveUp() {
+            layoutPosition.takeIf { it > 1 }?.also { currentPosition ->
+                data.removeAt(currentPosition).apply {
+                    data.add(currentPosition - 1, this)
+                }
+                notifyItemMoved(currentPosition, currentPosition - 1)
+            }
+        }
+
+        fun moveDown() {
+            layoutPosition.takeIf { it < data.size - 1 }?.also { currentPosition ->
+                data.removeAt(currentPosition).apply {
+                    data.add(currentPosition + 1, this)
+                }
+                notifyItemMoved(currentPosition, currentPosition + 1)
+            }
+        }
+    }
+
     inner class HeaderViewHolder(val binding: RecyclerItemHeaderBinding)
         : BaseViewHolder(binding.root) {
 
@@ -70,7 +118,7 @@ class RecyclerAdapter(
     }
 
     inner class MarsViewHolder(val binding: RecyclerItemMarsBinding) :
-        BaseViewHolder(binding.root) {
+        BaseViewHolder(binding.root), ItemTouchHelperViewHolder {
 
         override fun bind(data: Data) {
             binding.root.setOnClickListener { onListItemClickListener.onItemClick(data) }
@@ -78,35 +126,24 @@ class RecyclerAdapter(
             binding.removeItemImageView.setOnClickListener { removeItem() }
             binding.moveItemDown.setOnClickListener { moveDown() }
             binding.moveItemUp.setOnClickListener { moveUp() }
-
+            if (data.deployed) binding.marsDescriptionTextView.show()
+            else binding.marsDescriptionTextView.hide()
+            binding.marsTextView.setOnClickListener { toggleText() }
         }
 
-        private fun addItem() {
-            data.add(layoutPosition, generateItem())
-            notifyItemInserted(layoutPosition)
-        }
-
-        private fun removeItem() {
-            data.removeAt(layoutPosition)
-            notifyItemRemoved(layoutPosition)
-        }
-
-        private fun moveUp() {
-            layoutPosition.takeIf { it > 1 }?.also { currentPosition ->
-                data.removeAt(currentPosition).apply {
-                    data.add(currentPosition - 1, this)
-                }
-                notifyItemMoved(currentPosition, currentPosition - 1)
+        private fun toggleText() {
+            data[layoutPosition].deployed = data[layoutPosition].let {
+                !it.deployed
             }
+            notifyItemChanged(layoutPosition)
         }
 
-        private fun moveDown() {
-            layoutPosition.takeIf { it < data.size - 1 }?.also { currentPosition ->
-                data.removeAt(currentPosition).apply {
-                    data.add(currentPosition + 1, this)
-                }
-                notifyItemMoved(currentPosition, currentPosition + 1)
-            }
+        override fun onItemSelected() {
+            binding.root.setBackgroundColor(Color.LTGRAY)
+        }
+
+        override fun onItemClear() {
+            binding.root.setBackgroundColor(0)
         }
     }
 
