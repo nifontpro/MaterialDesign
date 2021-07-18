@@ -49,11 +49,12 @@ class RecyclerAdapter(
         return when {
             position == 0 -> TYPE_HEADER
             data[position].someDescription.isNullOrBlank() -> TYPE_MARS
-            else -> TYPE_EARTH
+            else -> TYPE_MARS
         }
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        if (fromPosition == 1 && toPosition == 0) return
         data.removeAt(fromPosition).apply {
             data.add(if (toPosition > fromPosition) toPosition - 1 else toPosition, this)
         }
@@ -61,11 +62,14 @@ class RecyclerAdapter(
     }
 
     override fun onItemDismiss(position: Int) {
-        data.removeAt(position)
-        notifyItemRemoved(position)
+        if (position > 0) {
+            data.removeAt(position)
+            notifyItemRemoved(position)
+        } else notifyItemChanged(position)
     }
 
-    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        ItemTouchHelperViewHolder {
 
         abstract fun bind(data: Data)
 
@@ -96,10 +100,18 @@ class RecyclerAdapter(
                 notifyItemMoved(currentPosition, currentPosition + 1)
             }
         }
+
+        override fun onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY)
+        }
+
+        override fun onItemClear() {
+            itemView.setBackgroundColor(0)
+        }
     }
 
-    inner class HeaderViewHolder(val binding: RecyclerItemHeaderBinding)
-        : BaseViewHolder(binding.root) {
+    inner class HeaderViewHolder(val binding: RecyclerItemHeaderBinding) :
+        BaseViewHolder(binding.root) {
 
         override fun bind(data: Data) {
             binding.root.setOnClickListener { onListItemClickListener.onItemClick(data) }
@@ -118,7 +130,7 @@ class RecyclerAdapter(
     }
 
     inner class MarsViewHolder(val binding: RecyclerItemMarsBinding) :
-        BaseViewHolder(binding.root), ItemTouchHelperViewHolder {
+        BaseViewHolder(binding.root) {
 
         override fun bind(data: Data) {
             binding.root.setOnClickListener { onListItemClickListener.onItemClick(data) }
@@ -136,14 +148,6 @@ class RecyclerAdapter(
                 !it.deployed
             }
             notifyItemChanged(layoutPosition)
-        }
-
-        override fun onItemSelected() {
-            binding.root.setBackgroundColor(Color.LTGRAY)
-        }
-
-        override fun onItemClear() {
-            binding.root.setBackgroundColor(0)
         }
     }
 
