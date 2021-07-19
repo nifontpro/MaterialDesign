@@ -3,7 +3,6 @@ package ru.nifontbus.materialdesign.ui.picture
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
@@ -204,12 +203,10 @@ class PictureOfTheDayFragment : Fragment() {
 
     private fun hideLoading() {
         binding.includedLoadingLayout.loadingLayout.hide()
-        Log.e("my", "Hide Loading.")
     }
 
     private fun showLoading() {
         binding.includedLoadingLayout.loadingLayout.show()
-        Log.e("my", "Show Loading.")
     }
 
     override fun onDestroyView() {

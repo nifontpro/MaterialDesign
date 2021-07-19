@@ -2,11 +2,13 @@ package ru.nifontbus.materialdesign.ui.recycler
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MotionEventCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.nifontbus.materialdesign.databinding.RecyclerItemEarthBinding
 import ru.nifontbus.materialdesign.databinding.RecyclerItemHeaderBinding
@@ -20,7 +22,7 @@ class RecyclerAdapter(
     private var data: MutableList<Data>,
     private val dragListener: OnStartDragListener
 
-    ) : RecyclerView.Adapter<RecyclerAdapter.BaseViewHolder>(), ItemTouchHelperAdapter {
+) : RecyclerView.Adapter<RecyclerAdapter.BaseViewHolder>(), ItemTouchHelperAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         // https://www.geeksforgeeks.org/how-to-use-view-binding-in-recyclerview-adapter-class-in-android/
@@ -45,16 +47,38 @@ class RecyclerAdapter(
         holder.bind(data[position])
     }
 
+    override fun onBindViewHolder(
+        holder: BaseViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isEmpty())
+            super.onBindViewHolder(holder, position, payloads)
+        else {
+/*            if (payloads.any { it is Data }) {
+                Log.e("my", "Old data: ${data[position]}")
+                data[position] = payloads[payloads.lastIndex] as Data
+                Log.e("my", "New data: ${data[position]}")
+                holder.changeSomeText(data[position].someText)
+            }*/
+
+            val combinedChange =
+                createCombinedPayload(payloads as List<Change<Data>>)
+            val oldData = combinedChange.oldData
+            val newData = combinedChange.newData
+
+            if (newData.someText != oldData.someText) {
+                holder.changeSomeText(newData.someText)
+            }
+        }
+    }
+
     override fun getItemCount(): Int {
         return data.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when {
-            position == 0 -> TYPE_HEADER
-            data[position].someDescription.isNullOrBlank() -> TYPE_MARS
-            else -> TYPE_MARS
-        }
+        return data[position].type
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
@@ -72,10 +96,57 @@ class RecyclerAdapter(
         } else notifyItemChanged(position)
     }
 
+    fun setItems(newItems: List<Data>) {
+        val result = DiffUtil.calculateDiff(DiffUtilCallback(data, newItems))
+        result.dispatchUpdatesTo(this)
+        data.clear()
+        data.addAll(newItems)
+    }
+
+
+    fun appendItem() {
+        data.add(generateItem())
+        notifyItemInserted(itemCount - 1)
+    }
+
+    private fun generateItem(): Data {
+        val data = Data("Mars")
+        Log.e("my", "ID = ${data.id}")
+        return data
+    }
+
+    inner class DiffUtilCallback(
+        private var oldItems: List<Data>,
+        private var newItems: List<Data>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldItems.size
+
+        override fun getNewListSize(): Int = newItems.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+            oldItems[oldItemPosition].id == newItems[newItemPosition].id
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+            oldItems[oldItemPosition].someText == newItems[newItemPosition].someText
+
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any {
+            val oldItem = oldItems[oldItemPosition]
+            val newItem = newItems[newItemPosition]
+
+            return Change(
+                oldItem,
+                newItem
+            )
+        }
+    }
+
+
     abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         ItemTouchHelperViewHolder {
 
-        abstract fun bind(data: Data)
+        abstract fun bind(dataItem: Data)
+        abstract fun changeSomeText(text: String)
 
         fun addItem() {
             data.add(layoutPosition, generateItem())
@@ -117,21 +188,30 @@ class RecyclerAdapter(
     inner class HeaderViewHolder(val binding: RecyclerItemHeaderBinding) :
         BaseViewHolder(binding.root) {
 
-        override fun bind(data: Data) {
-            binding.root.setOnClickListener { onListItemClickListener.onItemClick(data) }
+        override fun bind(dataItem: Data) {
+            binding.root.setOnClickListener {
+                notifyItemChanged(1, Data("Jupiter"))
+            }
         }
 
         override fun onItemSelected() {}
         override fun onItemClear() {}
+        override fun changeSomeText(text: String) {}
     }
 
     inner class EarthViewHolder(val binding: RecyclerItemEarthBinding) :
         BaseViewHolder(binding.root) {
 
-        override fun bind(data: Data) {
+        override fun changeSomeText(text: String) {}
+
+        override fun bind(dataItem: Data) {
             if (layoutPosition != RecyclerView.NO_POSITION) {
-                binding.descriptionTextView.text = data.someDescription
-                binding.wikiImageView.setOnClickListener { onListItemClickListener.onItemClick(data) }
+                binding.descriptionTextView.text = dataItem.someDescription
+                binding.wikiImageView.setOnClickListener {
+                    onListItemClickListener.onItemClick(
+                        dataItem
+                    )
+                }
             }
         }
     }
@@ -140,15 +220,17 @@ class RecyclerAdapter(
         BaseViewHolder(binding.root) {
 
         @SuppressLint("ClickableViewAccessibility")
-        override fun bind(data: Data) {
-            binding.root.setOnClickListener { onListItemClickListener.onItemClick(data) }
+        override fun bind(dataItem: Data) {
+            binding.root.setOnClickListener { onListItemClickListener.onItemClick(dataItem) }
             binding.addItemImageView.setOnClickListener { addItem() }
             binding.removeItemImageView.setOnClickListener { removeItem() }
             binding.moveItemDown.setOnClickListener { moveDown() }
             binding.moveItemUp.setOnClickListener { moveUp() }
-            if (data.deployed) binding.marsDescriptionTextView.show()
+            if (dataItem.deployed) binding.marsDescriptionTextView.show()
             else binding.marsDescriptionTextView.hide()
+            binding.marsTextView.text = dataItem.someText
             binding.marsTextView.setOnClickListener { toggleText() }
+
             binding.dragHandleImageView.setOnTouchListener { _, event ->
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                     dragListener.onStartDrag(this)
@@ -157,25 +239,16 @@ class RecyclerAdapter(
             }
         }
 
+        override fun changeSomeText(text: String) {
+            binding.marsTextView.text = text
+        }
+
         private fun toggleText() {
             data[layoutPosition].deployed = data[layoutPosition].let {
                 !it.deployed
             }
             notifyItemChanged(layoutPosition)
         }
-    }
-
-    fun appendItem() {
-        data.add(generateItem())
-        notifyItemInserted(itemCount - 1)
-    }
-
-    private fun generateItem(): Data = Data("Mars", "")
-
-    companion object {
-        private const val TYPE_EARTH = 0
-        private const val TYPE_MARS = 1
-        private const val TYPE_HEADER = 2
     }
 
     interface OnListItemClickListener {

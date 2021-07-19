@@ -10,11 +10,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import ru.nifontbus.materialdesign.databinding.FragmentRecyclerBinding
 
-class RecyclerFragment: Fragment() {
+class RecyclerFragment : Fragment() {
 
     private var _binding: FragmentRecyclerBinding? = null
     private val binding get() = _binding!!
     lateinit var itemTouchHelper: ItemTouchHelper
+    private var isNewList = false
+    private lateinit var adapter: RecyclerAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,10 +30,10 @@ class RecyclerFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val data = arrayListOf(
-            Data("Mars", "")
+            Data("Mars")
         )
-        data.add(0, Data("Header"))
-        val adapter = RecyclerAdapter(
+        data.add(0, Data("Header", type = TYPE_HEADER))
+        adapter = RecyclerAdapter(
             object : RecyclerAdapter.OnListItemClickListener {
                 override fun onItemClick(data: Data) {
                     Toast.makeText(requireContext(), data.someText, Toast.LENGTH_SHORT).show()
@@ -43,11 +46,41 @@ class RecyclerFragment: Fragment() {
                 }
             }
         )
-
+//        adapter.stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding.recyclerView.adapter = adapter
-        binding.recyclerActivityFAB.setOnClickListener { adapter.appendItem() }
+        binding.recyclerFAB.setOnClickListener { adapter.appendItem() }
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter))
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+        binding.recyclerDiffUtilFAB.setOnClickListener { changeAdapterData() }
+    }
+
+    private fun changeAdapterData() {
+        adapter.setItems(createItemList(isNewList).map { it })
+        isNewList = !isNewList
+    }
+
+    private fun createItemList(instanceNumber: Boolean): List<Data> {
+        Data.initId()
+        return when (instanceNumber) {
+            false -> listOf(
+                Data("Header", type = TYPE_HEADER),
+                Data("Mars"),
+                Data("Mars"),
+                Data("Mars"),
+                Data("Mars"),
+                Data("Mars"),
+                Data("Mars")
+            )
+            true -> listOf(
+                Data("Header", type = TYPE_HEADER),
+                Data("Mars"),
+                Data("Jupiter"),
+                Data("Mars"),
+                Data("Neptun"),
+                Data("Saturn"),
+                Data("Mars")
+            )
+        }
     }
 
     override fun onDestroyView() {
