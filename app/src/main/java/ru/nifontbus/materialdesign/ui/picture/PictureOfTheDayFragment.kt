@@ -3,7 +3,6 @@ package ru.nifontbus.materialdesign.ui.picture
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
@@ -24,14 +23,20 @@ import ru.nifontbus.materialdesign.R
 import ru.nifontbus.materialdesign.data.PictureOfTheDayData
 import ru.nifontbus.materialdesign.data.StateFragment
 import ru.nifontbus.materialdesign.databinding.FragmentMainBinding
-import ru.nifontbus.materialdesign.ui.apibottom.ApiBottomFragment
 import ru.nifontbus.materialdesign.ui.bottom.BottomNavigationDrawerFragment
+import ru.nifontbus.materialdesign.ui.recycler.notes.Note
+import ru.nifontbus.materialdesign.ui.recycler.notes.NotesFragment
 import ru.nifontbus.materialdesign.ui.settings.SettingsFragment
 import ru.nifontbus.materialdesign.ui.view_pager.MainPhotoFragment
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 
+interface OnSetDateInMainFragment {
+    fun setDate(date: LocalDate)
+}
 
 class PictureOfTheDayFragment : Fragment() {
 
@@ -43,6 +48,7 @@ class PictureOfTheDayFragment : Fragment() {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
     private var isExpanded = false
+    private var currentNote = Note("Пустая")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -122,7 +128,16 @@ class PictureOfTheDayFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> BottomNavigationDrawerFragment().show(childFragmentManager, "tag")
-            R.id.app_bar_fav -> replaceFragment(ApiBottomFragment())
+//            R.id.app_bar_fav -> replaceFragment(ApiBottomFragment())
+            R.id.app_bar_fav -> replaceFragment(
+                NotesFragment(currentNote,
+                    object : OnSetDateInMainFragment {
+                        override fun setDate(date: LocalDate) {
+                            requireActivity().supportFragmentManager.popBackStack()
+                            viewModel.setDate(date)
+                        }
+                    })
+            )
             R.id.app_bar_api -> replaceFragment(MainPhotoFragment())
             R.id.app_bar_settings -> replaceFragment(SettingsFragment())
             R.id.app_bar_search -> Toast.makeText(context, "Search", Toast.LENGTH_SHORT).show()
@@ -182,12 +197,16 @@ class PictureOfTheDayFragment : Fragment() {
                         error(R.drawable.ic_load_error_vector)
 //                        placeholder(R.drawable.ic_no_photo_vector)
                     }
-
+                    currentNote.title = serverResponseData.title.toString()
                     binding.includedBottomSheet.bottomSheetDescriptionHeader
-                        .text = serverResponseData.title
+                        .text = currentNote.title
+                    currentNote.description = serverResponseData.explanation.toString()
                     binding.includedBottomSheet.bottomSheetDescription
-                        .text = serverResponseData.explanation
-                    binding.tvDate.text = serverResponseData.date.toString()
+                        .text = currentNote.description
+
+                    val dateString = serverResponseData.date
+                    currentNote.date = LocalDate.parse(dateString)
+                    binding.tvDate.text = dateString
                 }
                 hideLoading()
             }
@@ -204,12 +223,10 @@ class PictureOfTheDayFragment : Fragment() {
 
     private fun hideLoading() {
         binding.includedLoadingLayout.loadingLayout.hide()
-        Log.e("my", "Hide Loading.")
     }
 
     private fun showLoading() {
         binding.includedLoadingLayout.loadingLayout.show()
-        Log.e("my", "Show Loading.")
     }
 
     override fun onDestroyView() {
