@@ -23,7 +23,7 @@ interface ItemTouchHelperViewHolder {
     fun onItemClear()
 }
 
-class ItemTouchHelperCallback(private val adapter: RecyclerAdapter) :
+class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
     ItemTouchHelper.Callback() {
 
     override fun isLongPressDragEnabled(): Boolean {

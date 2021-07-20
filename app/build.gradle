@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -67,4 +68,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
     //Koil image download (аналог Picasso и Glide, написанный на Kotlin)
     implementation("io.coil-kt:coil:0.9.2")
+    //RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    // For control over item selection of both touch and mouse driven selection
+    implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
+    //Room
+    implementation("androidx.room:room-runtime:2.3.0")
+    kapt("androidx.room:room-compiler:2.3.0")
 }

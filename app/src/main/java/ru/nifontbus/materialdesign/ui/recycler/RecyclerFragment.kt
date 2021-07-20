@@ -40,13 +40,13 @@ class RecyclerFragment : Fragment() {
                 }
             },
             data,
-            object : RecyclerAdapter.OnStartDragListener {
+            object : OnStartDragListener {
                 override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
                     itemTouchHelper.startDrag(viewHolder)
                 }
             }
         )
-//        adapter.stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding.recyclerView.adapter = adapter
         binding.recyclerFAB.setOnClickListener { adapter.appendItem() }
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter))

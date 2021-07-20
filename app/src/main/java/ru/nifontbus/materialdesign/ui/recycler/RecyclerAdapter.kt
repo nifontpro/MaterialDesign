@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.nifontbus.materialdesign.databinding.RecyclerItemEarthBinding
@@ -232,7 +231,8 @@ class RecyclerAdapter(
             binding.marsTextView.setOnClickListener { toggleText() }
 
             binding.dragHandleImageView.setOnTouchListener { _, event ->
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+//                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                     dragListener.onStartDrag(this)
                 }
                 false
@@ -253,9 +253,5 @@ class RecyclerAdapter(
 
     interface OnListItemClickListener {
         fun onItemClick(data: Data)
-    }
-
-    interface OnStartDragListener {
-        fun onStartDrag(viewHolder: RecyclerView.ViewHolder)
     }
 }

@@ -1,8 +1,9 @@
 package ru.nifontbus.materialdesign.ui.recycler
 
-const val TYPE_EARTH = 0
-const val TYPE_MARS = 1
-const val TYPE_HEADER = 2
+const val TYPE_HEADER = 0
+const val TYPE_EARTH = 1
+const val TYPE_MARS = 2
+
 //const val TYPE_JUPITER = 2
 
 data class Data(
