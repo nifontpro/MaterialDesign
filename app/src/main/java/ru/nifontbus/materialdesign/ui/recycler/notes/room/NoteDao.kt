@@ -9,4 +9,6 @@ interface PersonDao : BaseDao<NoteEntity> {
     @Query("SELECT * FROM NoteEntity")
     fun getAll(): List<NoteEntity>
 
+    @Query("DELETE FROM NoteEntity WHERE id = :id")
+    fun deleteById(id: Long)
 }

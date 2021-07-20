@@ -11,5 +11,4 @@ data class Note(
     val type: Int = TYPE_NOTE,
     val id: Long = 0,
     var deployed: Boolean = false,
-
 )

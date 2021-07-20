@@ -1,7 +1,6 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import ru.nifontbus.materialdesign.ui.picture.show
 import ru.nifontbus.materialdesign.ui.recycler.ItemTouchHelperAdapter
 import ru.nifontbus.materialdesign.ui.recycler.ItemTouchHelperViewHolder
 import ru.nifontbus.materialdesign.ui.recycler.TYPE_HEADER
-import ru.nifontbus.materialdesign.ui.recycler.notes.room.Converters
 import ru.nifontbus.materialdesign.ui.recycler.notes.room.LocalRepository
 import ru.nifontbus.materialdesign.ui.recycler.notes.room.LocalRepositoryImpl
 import java.time.format.DateTimeFormatter
@@ -65,6 +63,7 @@ class NotesAdapter(
 
     override fun onItemDismiss(position: Int) {
         if (position > 0) {
+            localRepository.deleteById(notes[position].id)
             notes.removeAt(position)
             notifyItemRemoved(position)
         } else notifyItemChanged(position)
@@ -84,6 +83,7 @@ class NotesAdapter(
         abstract fun changeSomeText(text: String)
 
         fun removeItem() {
+            localRepository.deleteById(notes[layoutPosition].id)
             notes.removeAt(layoutPosition)
             notifyItemRemoved(layoutPosition)
         }

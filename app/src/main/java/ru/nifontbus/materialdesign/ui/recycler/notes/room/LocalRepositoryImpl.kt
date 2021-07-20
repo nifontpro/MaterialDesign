@@ -12,6 +12,10 @@ class LocalRepositoryImpl(private val localDataSource: PersonDao) : LocalReposit
         localDataSource.insert(convertPersonToEntity(note))
     }
 
+    override fun deleteById(id: Long) {
+        localDataSource.deleteById(id)
+    }
+
     private fun convertNotesEntityToPersonList(entityList: List<NoteEntity>): List<Note> {
         return entityList.map {
             Note(
