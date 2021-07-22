@@ -1,8 +1,15 @@
 package ru.nifontbus.materialdesign.ui.picture
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.Typeface.ITALIC
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
@@ -31,7 +38,6 @@ import ru.nifontbus.materialdesign.ui.view_pager.MainPhotoFragment
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 interface OnSetDateInMainFragment {
@@ -74,6 +80,14 @@ class PictureOfTheDayFragment : Fragment() {
         setImageClick()
 
         viewModel.sendServerRequest()
+
+        activity?.let {
+            binding.tvDate.typeface =
+                Typeface.createFromAsset(it.assets, "gothic.otf")
+            binding.btnChangeDate.typeface =
+                Typeface.createFromAsset(it.assets, "Lobster-Regular.ttf")
+        }
+
     }
 
     private fun setImageClick() {
@@ -206,7 +220,20 @@ class PictureOfTheDayFragment : Fragment() {
 
                     val dateString = serverResponseData.date
                     currentNote.date = LocalDate.parse(dateString)
-                    binding.tvDate.text = dateString
+
+                    val spannable = SpannableString(dateString)
+                    spannable.setSpan(
+                        ForegroundColorSpan(Color.RED),
+                        spannable.length - 2, spannable.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    spannable.setSpan(
+                        StyleSpan(ITALIC),
+                        0,4,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    binding.tvDate.text = spannable
                 }
                 hideLoading()
             }
