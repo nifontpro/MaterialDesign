@@ -28,6 +28,14 @@
         <item name="textAppearanceButton">@style/AppTextAppearanceButton</item>
         <item name="materialButtonStyle">@style/AppButton</item>
 
+        <item name="themeColorPrimary">@color/gray_primary</item>
+        <item name="themeColorDark">@color/gray_dark</item>
+        <item name="themeColorLight">@color/gray_light</item>
+        <item name="themeColorBackground">@color/gray_background</item>
+    </style>
+
+    <style name="Theme.MaterialDesign.Splash">
+        <item name="android:windowBackground">@drawable/splash_background_drawable</item>
     </style>
 
     <style name="IndigoTheme" parent="Theme.MaterialDesign">
