@@ -12,16 +12,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MaterialDesign.Splash"
+        android:theme="@style/SeaTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".SplashActivity"></activity>
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
