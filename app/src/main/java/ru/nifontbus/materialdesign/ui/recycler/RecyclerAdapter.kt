@@ -126,8 +126,13 @@ class RecyclerAdapter(
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
             oldItems[oldItemPosition].id == newItems[newItemPosition].id
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            oldItems[oldItemPosition].someText == newItems[newItemPosition].someText
+/*        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+            oldItems[oldItemPosition].someText == newItems[newItemPosition].someText*/
+
+// https://habr.com/ru/post/337774/
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition] == newItems[newItemPosition]
+        }
 
         override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any {
             val oldItem = oldItems[oldItemPosition]
