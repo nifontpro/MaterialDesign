@@ -1,10 +1,8 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes.room
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Update
+import androidx.room.*
 
+@Dao
 interface BaseDao<T> {
 
     /**
@@ -13,7 +11,8 @@ interface BaseDao<T> {
      * @param obj the object to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(obj: T)
+//    fun insert(obj: T): Long
+    fun insert(obj: T): Long
 
     /**
      * Insert an array of objects in the database.

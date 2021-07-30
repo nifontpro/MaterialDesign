@@ -2,13 +2,15 @@ package ru.nifontbus.materialdesign.ui.recycler.notes.room
 
 import ru.nifontbus.materialdesign.ui.recycler.notes.Note
 
-class LocalRepositoryImpl(private val localDataSource: PersonDao) : LocalRepository {
+class LocalRepositoryImpl(private val localDataSource: NoteDao) : LocalRepository {
 
     override fun getAllNotes(): List<Note> {
         return convertNotesEntityToPersonList(localDataSource.getAll())
     }
 
+//    override fun saveNote(note: Note): Long {
     override fun saveNote(note: Note) {
+//        return localDataSource.insert(convertPersonToEntity(note))
         localDataSource.insert(convertPersonToEntity(note))
     }
 
