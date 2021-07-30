@@ -8,10 +8,8 @@ class LocalRepositoryImpl(private val localDataSource: NoteDao) : LocalRepositor
         return convertNotesEntityToPersonList(localDataSource.getAll())
     }
 
-//    override fun saveNote(note: Note): Long {
-    override fun saveNote(note: Note) {
-//        return localDataSource.insert(convertPersonToEntity(note))
-        localDataSource.insert(convertPersonToEntity(note))
+    override fun saveNote(note: Note): Long {
+        return localDataSource.insert(convertPersonToEntity(note))
     }
 
     override fun deleteById(id: Long) {

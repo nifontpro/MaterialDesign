@@ -34,10 +34,14 @@ class NotesViewModel :  ViewModel() {
 
     fun insert(note: Note) {
         handler.post {
+            note.id = 0
             val id = localRepository.saveNote(note)
-//            note.id = id
-            liveData.value?.add(note)
-            liveData.notifyObserver()
+            Log.e("my", "New Note Id = $id")
+            if (id > -1) {
+                note.id = id
+                liveData.value?.add(note)
+                liveData.notifyObserver()
+            }
         }
     }
 
