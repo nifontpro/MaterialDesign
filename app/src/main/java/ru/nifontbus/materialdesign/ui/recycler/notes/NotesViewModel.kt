@@ -1,7 +1,5 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes
 
-import android.os.Handler
-import android.os.HandlerThread
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
