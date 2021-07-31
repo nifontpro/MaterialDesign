@@ -1,6 +1,5 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 

@@ -1,7 +1,5 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes.room
 
-import androidx.lifecycle.LiveData
-
 class LocalRepositoryImpl(private val localDataSource: NoteDao) : LocalRepository {
 
     override fun getAllNotes(): List<NoteEntity> {
