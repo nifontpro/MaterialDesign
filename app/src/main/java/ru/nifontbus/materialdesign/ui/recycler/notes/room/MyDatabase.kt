@@ -6,5 +6,5 @@ import androidx.room.TypeConverters
 
 @Database(entities = [NoteEntity::class], version = 1, exportSchema = false)
 abstract class MyDatabase: RoomDatabase() {
-    abstract fun itemDao() : PersonDao
+    abstract fun itemDao() : NoteDao
 }

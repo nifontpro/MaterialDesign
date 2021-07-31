@@ -9,6 +9,6 @@ data class Note(
     var description: String = "",
     var date: LocalDate = LocalDate.now(),
     val type: Int = TYPE_NOTE,
-    val id: Long = 0,
+    var id: Long = 0,
     var deployed: Boolean = false,
 )

@@ -31,8 +31,8 @@ class SplashActivity : AppCompatActivity() {
         }, 3000)
         */
 
-        binding.imageView.animate().rotationBy(750f)
-            .setInterpolator(LinearInterpolator()).setDuration(2000)
+        binding.imageView.animate().rotationBy(200f)
+            .setInterpolator(LinearInterpolator()).setDuration(500)
             .setListener(object : Animator.AnimatorListener {
 
                 override fun onAnimationEnd(animation: Animator?) {

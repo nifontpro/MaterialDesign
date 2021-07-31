@@ -14,6 +14,7 @@ import ru.nifontbus.materialdesign.databinding.RecyclerItemHeaderBinding
 import ru.nifontbus.materialdesign.databinding.RecyclerItemMarsBinding
 import ru.nifontbus.materialdesign.ui.picture.hide
 import ru.nifontbus.materialdesign.ui.picture.show
+import kotlin.properties.Delegates
 
 class RecyclerAdapter(
 
@@ -21,7 +22,9 @@ class RecyclerAdapter(
     private var data: MutableList<Data>,
     private val dragListener: OnStartDragListener
 
-) : RecyclerView.Adapter<RecyclerAdapter.BaseViewHolder>(), ItemTouchHelperAdapter {
+) : RecyclerView.Adapter<RecyclerAdapter.BaseViewHolder>(),
+    ItemTouchHelperAdapter,
+    AutoUpdatableAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         // https://www.geeksforgeeks.org/how-to-use-view-binding-in-recyclerview-adapter-class-in-android/
@@ -96,8 +99,9 @@ class RecyclerAdapter(
     }
 
     fun setItems(newItems: List<Data>) {
-        val result = DiffUtil.calculateDiff(DiffUtilCallback(data, newItems))
-        result.dispatchUpdatesTo(this)
+//        val result = DiffUtil.calculateDiff(DiffUtilCallback(data, newItems))
+//        result.dispatchUpdatesTo(this)
+        autoNotify(data, newItems) { oldItem, newItem -> oldItem.id == newItem.id }
         data.clear()
         data.addAll(newItems)
     }
@@ -126,8 +130,13 @@ class RecyclerAdapter(
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
             oldItems[oldItemPosition].id == newItems[newItemPosition].id
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            oldItems[oldItemPosition].someText == newItems[newItemPosition].someText
+/*        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+            oldItems[oldItemPosition].someText == newItems[newItemPosition].someText*/
+
+        // https://habr.com/ru/post/337774/
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition] == newItems[newItemPosition]
+        }
 
         override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any {
             val oldItem = oldItems[oldItemPosition]
