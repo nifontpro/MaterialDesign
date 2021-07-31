@@ -34,7 +34,7 @@ class NotesViewModel :  ViewModel() {
 
     fun insert(note: Note) {
         handler.post {
-            note.id = 0
+            note.id = 0 // Чтобы не было конфликта с существующей записью!!!
             val id = localRepository.saveNote(note)
             Log.e("my", "New Note Id = $id")
             if (id > -1) {
