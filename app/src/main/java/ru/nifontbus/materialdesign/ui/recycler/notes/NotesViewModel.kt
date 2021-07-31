@@ -5,6 +5,9 @@ import android.os.HandlerThread
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.nifontbus.materialdesign.app.App
 import ru.nifontbus.materialdesign.ui.recycler.TYPE_HEADER
 import ru.nifontbus.materialdesign.ui.recycler.notes.room.LocalRepository
@@ -17,16 +20,12 @@ class NotesViewModel : ViewModel() {
 
     private val localRepository: LocalRepository = LocalRepositoryImpl(App.getHistoryDao())
 
-    private val handlerThread by lazy { HandlerThread("myThread") }
-    private val handler by lazy { Handler(handlerThread.looper) }
-
     init {
-        handlerThread.start()
         getAllItems()
     }
 
     private fun getAllItems() {
-        handler.post {
+        viewModelScope.launch(Dispatchers.IO) {
             val notes = convertNotesEntityToNotesList(localRepository.getAllNotes()).toMutableList()
             notes.add(0, Note("Header", type = TYPE_HEADER))
             liveData.postValue(notes)
@@ -34,7 +33,7 @@ class NotesViewModel : ViewModel() {
     }
 
     fun insert(note: Note) {
-        handler.post {
+        viewModelScope.launch(Dispatchers.IO) {
             note.id = 0 // Чтобы не было конфликта с существующей записью!!!
             val id = localRepository.saveNote(convertNoteToEntity(note))
             Log.e("my", "New Note Id = $id")
@@ -49,7 +48,7 @@ class NotesViewModel : ViewModel() {
     fun deleteByPosition(position: Int) {
         Log.e("my", "Delete by pos $position livedata.size = ${liveData.value!!.size}")
         if (position > 0) {
-            handler.post {
+            viewModelScope.launch(Dispatchers.IO) {
                 localRepository.deleteById(liveData.value!![position].id)
                 liveData.value!!.removeAt(position)
                 liveData.notifyObserver()
