@@ -1,9 +1,9 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes.room
 
-import ru.nifontbus.materialdesign.ui.recycler.notes.Note
+import androidx.lifecycle.LiveData
 
 interface LocalRepository {
-    fun getAllNotes(): List<Note>
-    fun saveNote(note: Note): Long
+    fun getAllNotes(): List<NoteEntity>
+    fun saveNote(noteEntity: NoteEntity): Long
     fun deleteById(id: Long)
 }

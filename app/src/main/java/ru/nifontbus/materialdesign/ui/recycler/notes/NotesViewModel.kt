@@ -9,10 +9,11 @@ import ru.nifontbus.materialdesign.app.App
 import ru.nifontbus.materialdesign.ui.recycler.TYPE_HEADER
 import ru.nifontbus.materialdesign.ui.recycler.notes.room.LocalRepository
 import ru.nifontbus.materialdesign.ui.recycler.notes.room.LocalRepositoryImpl
+import ru.nifontbus.materialdesign.ui.recycler.notes.room.NoteEntity
 
-class NotesViewModel :  ViewModel() {
+class NotesViewModel : ViewModel() {
 
-    var liveData: MutableLiveData<MutableList<Note>> = MutableLiveData()
+    var liveData: MutableLiveData<MutableList<Note>> = MutableLiveData<MutableList<Note>>()
 
     private val localRepository: LocalRepository = LocalRepositoryImpl(App.getHistoryDao())
 
@@ -26,7 +27,7 @@ class NotesViewModel :  ViewModel() {
 
     private fun getAllItems() {
         handler.post {
-            val notes = localRepository.getAllNotes().toMutableList()
+            val notes = convertNotesEntityToNotesList(localRepository.getAllNotes()).toMutableList()
             notes.add(0, Note("Header", type = TYPE_HEADER))
             liveData.postValue(notes)
         }
@@ -35,7 +36,7 @@ class NotesViewModel :  ViewModel() {
     fun insert(note: Note) {
         handler.post {
             note.id = 0 // Чтобы не было конфликта с существующей записью!!!
-            val id = localRepository.saveNote(note)
+            val id = localRepository.saveNote(convertNoteToEntity(note))
             Log.e("my", "New Note Id = $id")
             if (id > -1) {
                 note.id = id
@@ -47,7 +48,7 @@ class NotesViewModel :  ViewModel() {
 
     fun deleteByPosition(position: Int) {
         Log.e("my", "Delete by pos $position livedata.size = ${liveData.value!!.size}")
-        if (position > 0 ) {
+        if (position > 0) {
             handler.post {
                 localRepository.deleteById(liveData.value!![position].id)
                 liveData.value!!.removeAt(position)
@@ -56,6 +57,28 @@ class NotesViewModel :  ViewModel() {
         }
 
     }
+}
+
+private fun convertNotesEntityToNotesList(entityList: List<NoteEntity>): List<Note> {
+    return entityList.map {
+        Note(
+            it.title,
+            it.description,
+            it.date,
+            it.type,
+            it.id
+        )
+    }
+}
+
+private fun convertNoteToEntity(note: Note): NoteEntity {
+    return NoteEntity(
+        note.id,
+        note.title,
+        note.description,
+        note.date,
+        note.type
+    )
 }
 
 fun <T> MutableLiveData<T>.notifyObserver() {

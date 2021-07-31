@@ -1,10 +1,8 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ru.nifontbus.materialdesign.ui.recycler.notes.Note
 
 @Dao
 interface NoteDao : BaseDao<NoteEntity> {
