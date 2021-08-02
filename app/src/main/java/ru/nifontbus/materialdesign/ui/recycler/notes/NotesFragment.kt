@@ -49,7 +49,8 @@ class NotesFragment(
     }
 
     private fun renderData(list: MutableList<Note>) {
-        adapter.setItems(list)
+//        adapter.setItems(list)
+        adapter.submitList(list)
     }
 
     private fun destroyFragment() {

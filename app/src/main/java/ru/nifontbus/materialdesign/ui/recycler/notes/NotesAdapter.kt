@@ -1,8 +1,10 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import ru.nifontbus.materialdesign.databinding.ItemNoteBinding
@@ -20,19 +22,13 @@ class NotesAdapter(
 
     private val onSetDateInMainFragment: OnSetDateInMainFragment
 
-) : RecyclerView.Adapter<NotesAdapter.BaseViewHolder<ViewBinding>>(),
+) : ListAdapter<Note, NotesAdapter.BaseViewHolder<ViewBinding>>(DiffCallback()),
     ItemTouchHelperAdapter,
     AutoUpdatableAdapter {
 
     private var notes: MutableList<Note> = mutableListOf()
 
-    //    private val localRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
     lateinit var viewModel: NotesViewModel
-
-//    init {
-//        notes = localRepository.getAllNotes().toMutableList()
-//        notes.add(0, Note("Header", type = TYPE_HEADER))
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ViewBinding> {
 
@@ -67,14 +63,15 @@ class NotesAdapter(
         notes.addAll(newItems)
     }
 
+    override fun submitList(newItems: List<Note>?) {
+        super.submitList(newItems?.let { ArrayList(it) })
+        notes.clear()
+        newItems?.let { notes.addAll(it) }
+    }
+
     override fun onItemMove(fromPosition: Int, toPosition: Int) {}
 
     override fun onItemDismiss(position: Int) {
-//        if (position > 0) {
-//            localRepository.deleteById(notes[position].id)
-//            notes.removeAt(position)
-//            notifyItemRemoved(position)
-//        } else notifyItemChanged(position)
         if (position == 0) {
             notifyItemChanged(0)
         } else {
@@ -83,11 +80,6 @@ class NotesAdapter(
     }
 
     fun appendItem(note: Note) {
-//        note.deployed = false
-//        notes.add(note)
-//        notifyItemInserted(itemCount - 1)
-//        localRepository.saveNote(note)
-
         note.deployed = false
         viewModel.insert(note)
     }
@@ -102,14 +94,10 @@ class NotesAdapter(
         abstract fun changeSomeText(text: String)
 
         fun removeItem() {
-//            localRepository.deleteById(notes[layoutPosition].id)
-//            notes.removeAt(layoutPosition)
-//            notifyItemRemoved(layoutPosition)
             viewModel.deleteByPosition(layoutPosition)
         }
 
         override fun onItemSelected() {
-//            itemView.setBackgroundColor(Color.LTGRAY)
             binding.root.setBackgroundColor(Color.LTGRAY)
         }
 
