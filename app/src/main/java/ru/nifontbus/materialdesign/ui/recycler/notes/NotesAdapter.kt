@@ -2,9 +2,9 @@ package ru.nifontbus.materialdesign.ui.recycler.notes
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import ru.nifontbus.materialdesign.databinding.ItemNoteBinding
 import ru.nifontbus.materialdesign.databinding.RecyclerItemHeaderBinding
 import ru.nifontbus.materialdesign.ui.picture.OnSetDateInMainFragment
@@ -20,7 +20,7 @@ class NotesAdapter(
 
     private val onSetDateInMainFragment: OnSetDateInMainFragment
 
-) : RecyclerView.Adapter<NotesAdapter.BaseViewHolder>(),
+) : RecyclerView.Adapter<NotesAdapter.BaseViewHolder<ViewBinding>>(),
     ItemTouchHelperAdapter,
     AutoUpdatableAdapter {
 
@@ -34,7 +34,7 @@ class NotesAdapter(
 //        notes.add(0, Note("Header", type = TYPE_HEADER))
 //    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ViewBinding> {
 
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
@@ -49,7 +49,7 @@ class NotesAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<ViewBinding>, position: Int) {
         holder.bind(notes[position])
     }
 
@@ -92,7 +92,10 @@ class NotesAdapter(
         viewModel.insert(note)
     }
 
-    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    //    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    abstract inner class BaseViewHolder<out V : ViewBinding>(
+        val binding: V
+    ) : RecyclerView.ViewHolder(binding.root),
         ItemTouchHelperViewHolder {
 
         abstract fun bind(note: Note)
@@ -106,16 +109,17 @@ class NotesAdapter(
         }
 
         override fun onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY)
+//            itemView.setBackgroundColor(Color.LTGRAY)
+            binding.root.setBackgroundColor(Color.LTGRAY)
         }
 
         override fun onItemClear() {
-            itemView.setBackgroundColor(Color.WHITE)
+            binding.root.setBackgroundColor(Color.WHITE)
         }
     }
 
-    inner class HeaderViewHolder(val binding: RecyclerItemHeaderBinding) :
-        BaseViewHolder(binding.root) {
+    inner class HeaderViewHolder(binding: RecyclerItemHeaderBinding) :
+        BaseViewHolder<RecyclerItemHeaderBinding>(binding) {
 
         override fun bind(note: Note) {
             binding.header.text = "Избранное"
@@ -126,8 +130,8 @@ class NotesAdapter(
         override fun changeSomeText(text: String) {}
     }
 
-    inner class NoteViewHolder(val binding: ItemNoteBinding) :
-        BaseViewHolder(binding.root) {
+    inner class NoteViewHolder(binding: ItemNoteBinding) :
+        BaseViewHolder<ItemNoteBinding>(binding) {
 
         override fun bind(note: Note) {
             binding.tvTitle.text = note.title
