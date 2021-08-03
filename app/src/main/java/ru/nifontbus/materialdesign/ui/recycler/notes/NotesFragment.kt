@@ -8,9 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.broadcast.myapplication.adapter.decorations.FeedHorizontalDividerItemDecoration
+import com.broadcast.myapplication.adapter.decorations.GroupVerticalItemDecoration
 import ru.nifontbus.materialdesign.databinding.FragmentRecyclerBinding
 import ru.nifontbus.materialdesign.ui.picture.OnSetDateInMainFragment
 import ru.nifontbus.materialdesign.ui.recycler.ItemTouchHelperCallback
+import ru.nifontbus.materialdesign.ui.recycler.TYPE_HEADER
 
 // https://android--code.blogspot.com/2019/02/android-kotlin-room-recyclerview.html
 class NotesFragment(
@@ -39,7 +42,15 @@ class NotesFragment(
         adapter = NotesAdapter(onSetDateInMainFragment)
         adapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        binding.recyclerView.adapter = adapter
+
+        with(binding.recyclerView) {
+            adapter = this@NotesFragment.adapter
+
+            addItemDecoration(FeedHorizontalDividerItemDecoration(10)) // addable
+            addItemDecoration(GroupVerticalItemDecoration(TYPE_NOTE, 20, 0)) // addable
+            addItemDecoration(GroupVerticalItemDecoration(TYPE_HEADER, 0, 10)) // addable
+        }
+
         binding.recyclerFAB.setOnClickListener { adapter.appendItem(currentNote) }
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter))
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
@@ -49,8 +60,8 @@ class NotesFragment(
     }
 
     private fun renderData(list: MutableList<Note>) {
-//        adapter.setItems(list)
-        adapter.submitList(list)
+        adapter.setItems(list)
+//        adapter.submitList(list)
     }
 
     private fun destroyFragment() {
