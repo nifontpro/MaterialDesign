@@ -1,6 +1,7 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -47,10 +48,6 @@ class NotesAdapter(
 
     override fun onBindViewHolder(holder: BaseViewHolder<ViewBinding>, position: Int) {
         holder.bind(notes[position])
-    }
-
-    override fun getItemCount(): Int {
-        return notes.size
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -141,6 +138,7 @@ class NotesAdapter(
         }
 
         private fun toggleText() {
+            Log.e("my", "Current : " + currentList[layoutPosition].title)
             notes[layoutPosition].deployed = notes[layoutPosition].let {
                 !it.deployed
             }

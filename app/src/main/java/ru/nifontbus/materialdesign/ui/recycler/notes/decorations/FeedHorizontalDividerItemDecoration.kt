@@ -1,4 +1,4 @@
-package com.broadcast.myapplication.adapter.decorations
+package ru.nifontbus.materialdesign.ui.recycler.notes.decorations
 
 import android.graphics.Rect
 import android.view.View

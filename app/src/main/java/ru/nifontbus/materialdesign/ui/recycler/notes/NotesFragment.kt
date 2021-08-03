@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.broadcast.myapplication.adapter.decorations.FeedHorizontalDividerItemDecoration
-import com.broadcast.myapplication.adapter.decorations.GroupVerticalItemDecoration
+import ru.nifontbus.materialdesign.ui.recycler.notes.decorations.FeedHorizontalDividerItemDecoration
+import ru.nifontbus.materialdesign.ui.recycler.notes.decorations.GroupVerticalItemDecoration
 import ru.nifontbus.materialdesign.databinding.FragmentRecyclerBinding
 import ru.nifontbus.materialdesign.ui.picture.OnSetDateInMainFragment
 import ru.nifontbus.materialdesign.ui.recycler.ItemTouchHelperCallback
@@ -47,9 +47,9 @@ class NotesFragment(
         with(binding.recyclerView) {
             adapter = this@NotesFragment.adapter
 
-            addItemDecoration(FeedHorizontalDividerItemDecoration(10)) // addable
-            addItemDecoration(GroupVerticalItemDecoration(TYPE_NOTE, 20, 0)) // addable
-            addItemDecoration(GroupVerticalItemDecoration(TYPE_HEADER, 0, 10)) // addable
+            addItemDecoration(FeedHorizontalDividerItemDecoration(20)) // addable
+            addItemDecoration(GroupVerticalItemDecoration(TYPE_NOTE, 20, 20)) // addable
+            addItemDecoration(GroupVerticalItemDecoration(TYPE_HEADER, 0, 30)) // addable
         }
 
         binding.recyclerFAB.setOnClickListener { adapter.appendItem(currentNote) }
