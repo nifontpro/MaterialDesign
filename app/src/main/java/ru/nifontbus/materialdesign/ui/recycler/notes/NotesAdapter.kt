@@ -27,7 +27,7 @@ class NotesAdapter(
     ItemTouchHelperAdapter,
     AutoUpdatableAdapter {
 
-    private var notes: MutableList<Note> = mutableListOf()
+//    private var currentList: MutableList<Note> = mutableListOf()
 
     lateinit var viewModel: NotesViewModel
 
@@ -47,11 +47,11 @@ class NotesAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<ViewBinding>, position: Int) {
-        holder.bind(notes[position])
+        holder.bind(currentList[position])
     }
 
     override fun getItemViewType(position: Int): Int {
-        return notes[position].type
+        return currentList[position].type
     }
 
 /*    fun setItems(newItems: List<Note>) {
@@ -60,11 +60,11 @@ class NotesAdapter(
         notes.addAll(newItems)
     }*/
 
-    override fun submitList(newItems: List<Note>?) {
+/*    override fun submitList(newItems: List<Note>?) {
         super.submitList(newItems?.let { ArrayList(it) })
-        notes.clear()
-        newItems?.let { notes.addAll(it) }
-    }
+        currentList.clear()
+        newItems?.let { currentList.addAll(it) }
+    }*/
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {}
 
@@ -139,7 +139,7 @@ class NotesAdapter(
 
         private fun toggleText() {
             Log.e("my", "Current : " + currentList[layoutPosition].title)
-            notes[layoutPosition].deployed = notes[layoutPosition].let {
+            currentList[layoutPosition].deployed = currentList[layoutPosition].let {
                 !it.deployed
             }
             notifyItemChanged(layoutPosition)

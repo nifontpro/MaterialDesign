@@ -63,7 +63,7 @@ class NotesFragment(
     private fun renderData(list: MutableList<Note>) {
 //        adapter.setItems(list)
         Log.d("my", "read all: $list")
-        adapter.submitList(list)
+        adapter.submitList(list.toList())
 
     }
 
