@@ -1,6 +1,7 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,8 +61,10 @@ class NotesFragment(
     }
 
     private fun renderData(list: MutableList<Note>) {
-        adapter.setItems(list)
-//        adapter.submitList(list)
+//        adapter.setItems(list)
+        Log.d("my", "read all: $list")
+        adapter.submitList(list)
+
     }
 
     private fun destroyFragment() {

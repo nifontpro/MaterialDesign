@@ -11,4 +11,8 @@ data class Note(
     val type: Int = TYPE_NOTE,
     var id: Long = 0,
     var deployed: Boolean = false,
-)
+) {
+    override fun toString(): String {
+        return this.id.toString()
+    }
+}

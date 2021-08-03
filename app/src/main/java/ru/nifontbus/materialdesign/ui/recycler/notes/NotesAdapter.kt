@@ -3,6 +3,7 @@ package ru.nifontbus.materialdesign.ui.recycler.notes
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import ru.nifontbus.materialdesign.databinding.ItemNoteBinding
@@ -20,8 +21,8 @@ class NotesAdapter(
 
     private val onSetDateInMainFragment: OnSetDateInMainFragment
 
-//) : ListAdapter<Note, NotesAdapter.BaseViewHolder<ViewBinding>>(DiffCallback()),
-) : RecyclerView.Adapter<NotesAdapter.BaseViewHolder<ViewBinding>>(),
+) : ListAdapter<Note, NotesAdapter.BaseViewHolder<ViewBinding>>(DiffCallback()),
+//) : RecyclerView.Adapter<NotesAdapter.BaseViewHolder<ViewBinding>>(),
     ItemTouchHelperAdapter,
     AutoUpdatableAdapter {
 
@@ -56,18 +57,18 @@ class NotesAdapter(
         return notes[position].type
     }
 
-    fun setItems(newItems: List<Note>) {
+/*    fun setItems(newItems: List<Note>) {
         autoNotify(notes, newItems) { oldItem, newItem -> oldItem.id == newItem.id }
         notes.clear()
         notes.addAll(newItems)
-    }
+    }*/
 
- /*   override fun submitList(newItems: List<Note>?) {
+    override fun submitList(newItems: List<Note>?) {
         super.submitList(newItems?.let { ArrayList(it) })
         notes.clear()
         newItems?.let { notes.addAll(it) }
     }
-*/
+
     override fun onItemMove(fromPosition: Int, toPosition: Int) {}
 
     override fun onItemDismiss(position: Int) {

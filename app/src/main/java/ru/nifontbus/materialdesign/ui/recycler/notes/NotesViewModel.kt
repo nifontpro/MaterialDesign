@@ -1,6 +1,5 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,7 +14,6 @@ import ru.nifontbus.materialdesign.ui.recycler.notes.room.NoteEntity
 class NotesViewModel : ViewModel() {
 
     var liveData: MutableLiveData<MutableList<Note>> = MutableLiveData<MutableList<Note>>()
-
     private val localRepository: LocalRepository = LocalRepositoryImpl(App.getHistoryDao())
 
     init {
@@ -32,19 +30,18 @@ class NotesViewModel : ViewModel() {
 
     fun insert(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
-            note.id = 0 // Чтобы не было конфликта с существующей записью!!!
-            val id = localRepository.saveNote(convertNoteToEntity(note))
-            Log.e("my", "New Note Id = $id")
+            val newNote = note.copy(id = 0) // 0 - Чтобы не было конфликта с существующей записью!!!
+            val id = localRepository.saveNote(convertNoteToEntity(newNote))
+
             if (id > -1) {
-                note.id = id
-                liveData.value?.add(note)
+                newNote.id = id
+                liveData.value?.add(newNote)
                 liveData.notifyObserver()
             }
         }
     }
 
     fun deleteByPosition(position: Int) {
-        Log.e("my", "Delete by pos $position livedata.size = ${liveData.value!!.size}")
         if (position > 0) {
             viewModelScope.launch(Dispatchers.IO) {
                 localRepository.deleteById(liveData.value!![position].id)
@@ -52,7 +49,6 @@ class NotesViewModel : ViewModel() {
                 liveData.notifyObserver()
             }
         }
-
     }
 }
 
