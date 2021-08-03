@@ -23,11 +23,8 @@ class NotesAdapter(
     private val onSetDateInMainFragment: OnSetDateInMainFragment
 
 ) : ListAdapter<Note, NotesAdapter.BaseViewHolder<ViewBinding>>(DiffCallback()),
-//) : RecyclerView.Adapter<NotesAdapter.BaseViewHolder<ViewBinding>>(),
     ItemTouchHelperAdapter,
     AutoUpdatableAdapter {
-
-//    private var currentList: MutableList<Note> = mutableListOf()
 
     lateinit var viewModel: NotesViewModel
 
@@ -54,18 +51,6 @@ class NotesAdapter(
         return currentList[position].type
     }
 
-/*    fun setItems(newItems: List<Note>) {
-        autoNotify(notes, newItems) { oldItem, newItem -> oldItem.id == newItem.id }
-        notes.clear()
-        notes.addAll(newItems)
-    }*/
-
-/*    override fun submitList(newItems: List<Note>?) {
-        super.submitList(newItems?.let { ArrayList(it) })
-        currentList.clear()
-        newItems?.let { currentList.addAll(it) }
-    }*/
-
     override fun onItemMove(fromPosition: Int, toPosition: Int) {}
 
     override fun onItemDismiss(position: Int) {
@@ -81,7 +66,6 @@ class NotesAdapter(
         viewModel.insert(note)
     }
 
-    //    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     abstract inner class BaseViewHolder<out V : ViewBinding>(
         val binding: V
     ) : RecyclerView.ViewHolder(binding.root),
@@ -138,7 +122,6 @@ class NotesAdapter(
         }
 
         private fun toggleText() {
-            Log.e("my", "Current : " + currentList[layoutPosition].title)
             currentList[layoutPosition].deployed = currentList[layoutPosition].let {
                 !it.deployed
             }

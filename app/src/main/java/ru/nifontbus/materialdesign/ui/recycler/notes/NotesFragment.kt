@@ -1,7 +1,6 @@
 package ru.nifontbus.materialdesign.ui.recycler.notes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ru.nifontbus.materialdesign.ui.recycler.notes.decorations.FeedHorizontalDividerItemDecoration
-import ru.nifontbus.materialdesign.ui.recycler.notes.decorations.GroupVerticalItemDecoration
 import ru.nifontbus.materialdesign.databinding.FragmentRecyclerBinding
 import ru.nifontbus.materialdesign.ui.picture.OnSetDateInMainFragment
 import ru.nifontbus.materialdesign.ui.recycler.ItemTouchHelperCallback
 import ru.nifontbus.materialdesign.ui.recycler.TYPE_HEADER
+import ru.nifontbus.materialdesign.ui.recycler.notes.decorations.FeedHorizontalDividerItemDecoration
+import ru.nifontbus.materialdesign.ui.recycler.notes.decorations.GroupVerticalItemDecoration
 
-// https://android--code.blogspot.com/2019/02/android-kotlin-room-recyclerview.html
 class NotesFragment(
     private val currentNote: Note,
     private val onSetDateInMainFragment: OnSetDateInMainFragment
@@ -27,8 +25,6 @@ class NotesFragment(
     private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var adapter: NotesAdapter
     private val viewModel: NotesViewModel by lazy { ViewModelProvider(this).get(NotesViewModel::class.java) }
-
-    // https://android--code.blogspot.com/2019/02/android-kotlin-room-recyclerview.html
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,10 +57,7 @@ class NotesFragment(
     }
 
     private fun renderData(list: MutableList<Note>) {
-//        adapter.setItems(list)
-        Log.d("my", "read all: $list")
         adapter.submitList(list.toList())
-
     }
 
     private fun destroyFragment() {
